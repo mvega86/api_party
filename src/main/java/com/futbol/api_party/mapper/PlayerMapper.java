@@ -11,10 +11,10 @@ public class PlayerMapper {
     public PlayerDTO toDTO(Player player){
         return new PlayerDTO(
                 player.getId(),
-                player.getFull_name(),
-                player.getJersey_name(),
-                player.getJersey_number(),
-                player.getBirth_date(),
+                player.getFullName(),
+                player.getJerseyName(),
+                player.getJerseyNumber(),
+                player.getBirthDate(),
                 player.getAge(),
                 player.getTeam() != null ? player.getTeam().getId() : null // Ahora almacena solo el ID del equipo
         );
@@ -22,10 +22,10 @@ public class PlayerMapper {
     public Player toEntity(PlayerDTO playerDTO, Team team){
         return new Player(
                 playerDTO.getId(),
-                playerDTO.getFull_name(),
-                playerDTO.getJersey_name(),
-                playerDTO.getJersey_number(),
-                playerDTO.getBirth_date(),
+                playerDTO.getFullName(),
+                playerDTO.getJerseyName(),
+                playerDTO.getJerseyNumber(),
+                playerDTO.getBirthDate(),
                 playerDTO.getAge(),
                 team
         );

@@ -23,20 +23,17 @@ public class Player extends AuditModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Full name is required")
     @Column(name = "full_name", nullable = false)
-    private String full_name;
+    private String fullName;
 
     @Column(name = "jersey_name")
-    private String jersey_name;
+    private String jerseyName;
 
-    @Min(value = 1, message = "The dorsal must be a positive number")
     @Column(name = "jersey_number")
-    private Integer jersey_number;
+    private Integer jerseyNumber;
 
-    @Past(message = "The date of birth must be a date in the past")
     @Column(name = "birth_date", nullable = false)
-    private LocalDate birth_date;
+    private LocalDate birthDate;
 
     @Formula("(EXTRACT(YEAR FROM AGE(CURRENT_DATE, birth_date)))")
     private Integer age;

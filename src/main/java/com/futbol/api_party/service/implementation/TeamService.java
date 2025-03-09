@@ -1,5 +1,6 @@
 package com.futbol.api_party.service.implementation;
 
+import com.futbol.api_party.exception.EntityNotFoundException;
 import com.futbol.api_party.mapper.TeamMapper;
 import com.futbol.api_party.mapper.dto.TeamDTO;
 import com.futbol.api_party.persistence.entity.Player;
@@ -9,6 +10,7 @@ import com.futbol.api_party.persistence.repository.TeamRepository;
 import com.futbol.api_party.service.ITeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,19 +41,20 @@ public class TeamService implements ITeamService {
     }
 
     @Override
+    @Transactional
     public TeamDTO save(TeamDTO teamDTO) {
         List<Player> players = new ArrayList<>();
 
-        // Si el DTO tiene IDs de jugadores, los buscamos en la BD
+        // If the DTO has player IDs, we look them up in the DB
         if (teamDTO.getPlayerIds() != null) {
             players = playerRepository.findAllById(teamDTO.getPlayerIds());
         }
 
-        // Convertimos el DTO a entidad con los jugadores encontrados
+        // Converting the DTO to an entity with the players found
         Team team = teamMapper.toEntity(teamDTO, players);
         team = teamRepository.save(team);
 
-        // Asignamos el equipo a cada jugador y los actualizamos
+        // Assigning the team to each player and update them
         for (Player player : players) {
             player.setTeam(team);
         }
@@ -62,6 +65,8 @@ public class TeamService implements ITeamService {
 
     @Override
     public void delete(Long id) {
+        Team player = teamRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Team with ID " + id + " was not found."));
         teamRepository.deleteById(id);
     }
 }

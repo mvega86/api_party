@@ -3,6 +3,7 @@ package com.futbol.api_party.mapper.dto;
 import com.futbol.api_party.persistence.entity.Team;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,10 +18,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PlayerDTO {
     private Long id;
-    private String full_name;
-    private String jersey_name;
-    private Integer jersey_number;
-    private LocalDate birth_date;
+    @NotBlank(message = "Full name is required")
+    private String fullName;
+
+    @NotBlank(message = "Jersey name is required")
+    private String jerseyName;
+
+    @Min(value = 1, message = "The dorsal must be a positive number")
+    private Integer jerseyNumber;
+
+    @Past(message = "The date of birth must be a date in the past")
+    private LocalDate birthDate;
     private Integer age;
     private Long teamId;
 }

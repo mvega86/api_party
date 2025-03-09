@@ -2,6 +2,7 @@ package com.futbol.api_party.controller;
 
 import com.futbol.api_party.mapper.dto.PlayerDTO;
 import com.futbol.api_party.service.IPlayerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class PlayerController {
     }
 
     @PostMapping
-    public ResponseEntity<PlayerDTO> save(@RequestBody PlayerDTO playerDTO) {
+    public ResponseEntity<PlayerDTO> save(@Valid @RequestBody PlayerDTO playerDTO) {
         return ResponseEntity.ok(playerService.save(playerDTO));
     }
 
