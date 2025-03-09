@@ -41,4 +41,8 @@ public class Player extends AuditModel {
     @Formula("(EXTRACT(YEAR FROM AGE(CURRENT_DATE, birth_date)))")
     private Integer age;
 
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = true)
+    private Team team;
+
 }
