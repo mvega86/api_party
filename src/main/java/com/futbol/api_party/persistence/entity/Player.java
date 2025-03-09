@@ -1,48 +1,44 @@
 package com.futbol.api_party.persistence.entity;
 
+import com.futbol.api_party.persistence.audit.AuditModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
+
 import java.time.LocalDate;
 import java.time.Period;
 
 @Entity
 @Table(name = "players")
+@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Player {
+public class Player extends AuditModel {
     @Id
-    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El nombre completo es obligatorio")
-    @Getter
-    @Column(name = "nombre_completo", nullable = false)
-    private String nombreCompleto;
+    @NotBlank(message = "Full name is required")
+    @Column(name = "full_name", nullable = false)
+    private String full_name;
 
-    @Column(name = "nombre_dorsal")
-    @Getter
-    private String nombreDorsal;
+    @Column(name = "jersey_name")
+    private String jersey_name;
 
-    @Min(value = 1, message = "El dorsal debe ser un número positivo")
-    @Column(name = "dorsal")
-    @Getter
-    private Integer dorsal;
+    @Min(value = 1, message = "The dorsal must be a positive number")
+    @Column(name = "jersey_number")
+    private Integer jersey_number;
 
-    @Past(message = "La fecha de nacimiento debe ser una fecha pasada")
-    @Column(name = "fecha_nacimiento", nullable = false)
-    @Getter
-    private LocalDate fechaNacimiento;
+    @Past(message = "The date of birth must be a date in the past")
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birth_date;
 
-    @Transient
-    private Integer edad;
+    @Formula("(EXTRACT(YEAR FROM AGE(CURRENT_DATE, birth_date)))")
+    private Integer age;
 
-    public Integer getEdad() {
-        return fechaNacimiento != null ? Period.between(fechaNacimiento, LocalDate.now()).getYears() : null;
-    }
 }
