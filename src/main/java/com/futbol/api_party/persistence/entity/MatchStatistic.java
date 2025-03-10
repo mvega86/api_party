@@ -25,6 +25,6 @@ public class MatchStatistic extends AuditModel {
     private Double value;
     private String unit; // Optional(ex: "km", "seconds", "meters", null not apply)
 
-    private LocalDateTime timestamp; // Just moment at statistic
+    private LocalDateTime timestamp; // Exact date and time the statistic occurred
 }
 
