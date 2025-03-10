@@ -8,12 +8,15 @@ import com.futbol.api_party.persistence.entity.Team;
 import com.futbol.api_party.persistence.repository.PlayerRepository;
 import com.futbol.api_party.persistence.repository.TeamRepository;
 import com.futbol.api_party.service.IPlayerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 public class PlayerService implements IPlayerService {
     @Autowired
@@ -28,21 +31,29 @@ public class PlayerService implements IPlayerService {
         /*if (playerDTO.getFullName().equals("error")) {
             throw new RuntimeException("Simulación de error inesperado");
         }*/
+        log.info("Saving player: {}", playerDTO.getFullName());
 
         Team team = null;
 
         // Checking if the DTO has an associated equipment ID and look for it in the DB
         if (playerDTO.getTeamId() != null) {
             team = teamRepository.findById(playerDTO.getTeamId()).orElseThrow(
-                    () -> new EntityNotFoundException("Team with ID " + playerDTO.getTeamId() + " was not found.")
-            );
+                    () -> {
+                        log.error("Team with ID {} not found", playerDTO.getTeamId());
+                        return new EntityNotFoundException("Team with ID " + playerDTO.getTeamId() + " was not found.");
+                    });
         }
 
-        // Converting the DTO to an entity by passing it the equipment found
-        Player player = playerMapper.toEntity(playerDTO, team);
-
-        // Saving the player and return the DTO
-        return playerMapper.toDTO(playerRepository.save(player));
+        try {
+            // Converting the DTO to an entity by passing it the equipment found
+            Player player = playerMapper.toEntity(playerDTO, team);
+            // Saving the player and return the DTO
+            log.info("Player saved successfully");
+            return playerMapper.toDTO(playerRepository.save(player));
+        } catch (Exception e){
+            log.error("Unexpected error saving player: {}", e.getMessage(), e);
+            throw new RuntimeException("Error saving player.");
+        }
 
     }
 
@@ -53,15 +64,25 @@ public class PlayerService implements IPlayerService {
 
     @Override
     public PlayerDTO getById(Long id) {
+        log.info("Searching player with id {}...", id);
         Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Player with ID " + id + " was not found."));
+                .orElseThrow(() -> {
+                    log.error("Player with ID {} not found", id);
+                    return new EntityNotFoundException("Player with ID " + id + " was not found.");
+                });
+        log.info("Player found: {}", player.getFullName());
         return playerRepository.findById(id).map(playerMapper::toDTO).orElse(null);
     }
 
     @Override
     public void delete(Long id) {
+        log.info("Searching player with id {} to delete...", id);
         Player player = playerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Player with ID " + id + " was not found."));
+                .orElseThrow(() -> {
+                    log.error("Player with ID {} not found", id);
+                    return new EntityNotFoundException("Player with ID " + id + " was not found.");
+                });
         playerRepository.deleteById(id);
+        log.info("Player {} delete successfully.", player.getFullName());
     }
 }

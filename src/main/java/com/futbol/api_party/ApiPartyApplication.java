@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.futbol.api_party")
 public class ApiPartyApplication {
 
 	public static void main(String[] args) {
