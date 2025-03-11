@@ -26,7 +26,14 @@ public class Match extends AuditModel {
     @JoinColumn(name = "away_team_id", nullable = false)
     private Team awayTeam;
 
-    private LocalDateTime matchDate;
+    private LocalDateTime startFirstTime;
+    private LocalDateTime endFirstTime;
+    private LocalDateTime startSecondTime;
+    private LocalDateTime endSecondTime;
+    private LocalDateTime startFirstExtraTime;
+    private LocalDateTime endFirstExtraTime;
+    private LocalDateTime startSecondExtraTime;
+    private LocalDateTime endSecondExtraTime;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlayerMatch> playerMatches;

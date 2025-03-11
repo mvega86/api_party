@@ -21,6 +21,13 @@ public class MatchDTO {
 
     @NotNull(message = "The date and time of the match is required.")
     @FutureOrPresent(message = "The date of the match cannot be earlier than the current time.")
-    private LocalDateTime matchDate;
+    private LocalDateTime startFirstTime;
+    private LocalDateTime endFirstTime;
+    private LocalDateTime startSecondTime;
+    private LocalDateTime endSecondTime;
+    private LocalDateTime startFirstExtraTime;
+    private LocalDateTime endFirstExtraTime;
+    private LocalDateTime startSecondExtraTime;
+    private LocalDateTime endSecondExtraTime;
 }
 

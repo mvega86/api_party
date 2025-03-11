@@ -27,13 +27,8 @@ public class MatchStatisticDTO {
     private String unit; // Example: "km", "seconds", "meters"
 
     @NotNull(message = "The statistics timestamp is required.")
-    private LocalDateTime timestamp; // Exact date and time the statistic occurred
+    private LocalDateTime timestamp;
 
-    public Integer getRelativeMinute(LocalDateTime matchStartTime) {
-        if (matchStartTime != null && timestamp != null) {
-            return (int) java.time.Duration.between(matchStartTime, timestamp).toMinutes();
-        }
-        return null;
-    }
+    private String relativeMinuteFormatted; // Relative minute the statistic occurred
+
 }
-

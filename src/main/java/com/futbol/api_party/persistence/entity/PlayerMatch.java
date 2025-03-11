@@ -2,10 +2,19 @@ package com.futbol.api_party.persistence.entity;
 
 import com.futbol.api_party.persistence.audit.AuditModel;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PlayerMatch extends AuditModel {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,21 +32,8 @@ public class PlayerMatch extends AuditModel {
         @JoinColumn(name = "player_id", nullable = false)
         private Player player;
 
-        private LocalDateTime in; // Exact date and time a player in
-        private LocalDateTime out; // Exact date and time a player out
-
-        public Integer getEntryMinute() {
-                if (match != null && match.getMatchDate() != null && in != null) {
-                        return (int) java.time.Duration.between(match.getMatchDate(), in).toMinutes();
-                }
-                return null;
-        }
-
-        public Integer getExitMinute() {
-                if (match != null && match.getMatchDate() != null && out != null) {
-                        return (int) java.time.Duration.between(match.getMatchDate(), out).toMinutes();
-                }
-                return null;
-        }
+        private LocalDateTime in; // Fecha y hora exacta de entrada
+        private LocalDateTime out; // Fecha y hora exacta de salida
 
 }
+
