@@ -51,7 +51,7 @@ public class PlayerService implements IPlayerService {
             log.info("Player saved successfully");
             return playerMapper.toDTO(playerRepository.save(player));
         } catch (Exception e){
-            log.error("Unexpected error saving player: {}", e.getMessage(), e);
+            log.error("Unexpected error saving player: {}", e.getMessage());
             throw new RuntimeException("Error saving player.");
         }
 
