@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/player-matches")
+@RequestMapping("/api/v1/player-matches")
 @Slf4j
 public class PlayerMatchController {
 
@@ -22,9 +22,15 @@ public class PlayerMatchController {
     }
 
     @PostMapping
-    public PlayerMatchDTO assignPlayerToMatch(@Valid @RequestBody PlayerMatchDTO playerMatchDTO) {
-        log.info("Request to assign player {} to match {}", playerMatchDTO.getPlayerId(), playerMatchDTO.getMatchId());
-        return playerMatchService.assignPlayerToMatch(playerMatchDTO);
+    public List<PlayerMatchDTO> assignPlayersToMatch(@Valid @RequestBody List<PlayerMatchDTO> playerMatchDTOs) {
+        log.info("Assigning {} players to matches", playerMatchDTOs.size());
+
+        return playerMatchDTOs.stream()
+                .map(dto -> {
+                    log.info("Assigning player {} to match {}", dto.getPlayerId(), dto.getMatchId());
+                    return playerMatchService.assignPlayerToMatch(dto);
+                })
+                .toList();
     }
 
     @GetMapping("/{matchId}")

@@ -37,8 +37,5 @@ public class Match extends AuditModel {
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlayerMatch> playerMatches;
-
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchStatistic> statistics;
 }
 

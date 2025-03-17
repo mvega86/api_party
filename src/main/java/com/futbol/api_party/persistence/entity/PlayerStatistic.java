@@ -2,6 +2,7 @@ package com.futbol.api_party.persistence.entity;
 
 import com.futbol.api_party.persistence.audit.AuditModel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MatchStatistic extends AuditModel {
+public class PlayerStatistic extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,10 +22,16 @@ public class MatchStatistic extends AuditModel {
     @JoinColumn(name = "player_match_id", nullable = false)
     private PlayerMatch playerMatch;
 
-    private String statisticName;
-    private Double value;
-    private String unit; // Optional(ex: "km", "seconds", "meters", null not apply)
+    @ManyToOne
+    @JoinColumn(name = "statistic_id", nullable = false)
+    private Statistic statistic;
 
-    private LocalDateTime timestamp; // Exact date and time the statistic occurred
+    @NotNull
+    @Column(nullable = false)
+    private Double value;
+
+    @NotNull
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 }
 
