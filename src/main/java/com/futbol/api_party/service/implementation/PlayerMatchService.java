@@ -54,6 +54,9 @@ public class PlayerMatchService implements IPlayerMatchService {
 
         try {
             PlayerMatch playerMatch = playerMatchMapper.toEntity(playerMatchDTO, match, player);
+            if (match.getStartFirstTime()!=null){
+                playerMatch.setIn(match.getStartFirstTime());
+            }
             playerMatch = playerMatchRepository.save(playerMatch);
             log.info("Player match assigned successfully");
             return playerMatchMapper.toDTO(playerMatch);
