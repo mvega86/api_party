@@ -36,20 +36,21 @@ public class PlayerService implements IPlayerService {
         Team team = null;
 
         // Checking if the DTO has an associated equipment ID and look for it in the DB
-        if (playerDTO.getTeamId() != null) {
-            team = teamRepository.findById(playerDTO.getTeamId()).orElseThrow(
+        if (playerDTO.getTeam() != null) {
+            team = teamRepository.findById(playerDTO.getTeam().getId()).orElseThrow(
                     () -> {
-                        log.error("Team with ID {} not found", playerDTO.getTeamId());
-                        return new EntityNotFoundException("Team with ID " + playerDTO.getTeamId() + " was not found.");
+                        log.error("Team with ID {} not found", playerDTO.getTeam().getId());
+                        return new EntityNotFoundException("Team with ID " + playerDTO.getTeam().getId() + " was not found.");
                     });
         }
 
         try {
             // Converting the DTO to an entity by passing it the equipment found
-            Player player = playerMapper.toEntity(playerDTO, team);
+            Player player = playerMapper.toEntity(playerDTO);
             // Saving the player and return the DTO
+            player = playerRepository.save(player);
             log.info("Player saved successfully");
-            return playerMapper.toDTO(playerRepository.save(player));
+            return playerMapper.toDTO(player);
         } catch (Exception e){
             log.error("Unexpected error saving player: {}", e.getMessage());
             throw new RuntimeException("Error saving player.");

@@ -1,20 +1,27 @@
 package com.futbol.api_party.mapper;
 
+import com.futbol.api_party.mapper.dto.PlayerDTO;
 import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.persistence.entity.Match;
 import com.futbol.api_party.persistence.entity.Player;
-import com.futbol.api_party.persistence.entity.Team;
 import com.futbol.api_party.persistence.entity.PlayerMatch;
 import com.futbol.api_party.utils.MatchTimeUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PlayerMatchMapper {
 
-    public PlayerMatch toEntity(PlayerMatchDTO dto, Match match, Team team, Player player) {
+    private final MatchMapper matchMapper;
+    private final PlayerMapper playerMapper;
+
+    public PlayerMatchMapper(@Lazy MatchMapper matchMapper, PlayerMapper playerMapper) {
+        this.matchMapper = matchMapper;
+        this.playerMapper = playerMapper;
+    }
+    public PlayerMatch toEntity(PlayerMatchDTO dto, Match match, Player player) {
         PlayerMatch playerMatch = new PlayerMatch();
         playerMatch.setMatch(match);
-        playerMatch.setTeam(team);
         playerMatch.setPlayer(player);
         playerMatch.setIn(dto.getIn());
         playerMatch.setOut(dto.getOut());
@@ -23,15 +30,18 @@ public class PlayerMatchMapper {
 
     public PlayerMatchDTO toDTO(PlayerMatch playerMatch) {
         PlayerMatchDTO dto = new PlayerMatchDTO();
-        dto.setMatchId(playerMatch.getMatch().getId());
-        dto.setTeamId(playerMatch.getTeam().getId());
-        dto.setPlayerId(playerMatch.getPlayer().getId());
-        dto.setIn(playerMatch.getOut());
-        dto.setOut(playerMatch.getOut());
+        dto.setId(playerMatch.getId());
 
-        // Calculate relative minute for display only in API
-        dto.setInMinuteFormatted(MatchTimeUtil.calculateRelativeMinuteFormatted(playerMatch.getMatch(), playerMatch.getIn()));
-        dto.setOutMinuteFormatted(MatchTimeUtil.calculateRelativeMinuteFormatted(playerMatch.getMatch(), playerMatch.getOut()));
+        // 🔹 Se evita anidar `MatchDTO` completo para prevenir recursividad
+        dto.setMatch(null);
+
+        // 🔹 Se evita anidar `PlayerDTO` completo para prevenir recursividad
+        PlayerDTO playerDTO = playerMapper.toDTO(playerMatch.getPlayer());
+        playerDTO.setTeam(null); // Evita ciclos recursivos
+        dto.setPlayer(playerDTO);
+
+        dto.setIn(playerMatch.getIn());
+        dto.setOut(playerMatch.getOut());
 
         return dto;
     }

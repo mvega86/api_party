@@ -25,10 +25,6 @@ public class PlayerMatch extends AuditModel {
         private Match match;
 
         @ManyToOne
-        @JoinColumn(name = "team_id", nullable = false)
-        private Team team;
-
-        @ManyToOne
         @JoinColumn(name = "player_id", nullable = false)
         private Player player;
 

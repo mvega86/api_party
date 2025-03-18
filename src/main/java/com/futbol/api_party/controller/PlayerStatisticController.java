@@ -25,7 +25,7 @@ public class PlayerStatisticController {
 
         return playerStatisticDTOS.stream()
                 .map(dto -> {
-                    log.info("Adding statistic with id '{}' for playerMatch with id {}", dto.getStatisticId(), dto.getPlayerMatchId());
+                    log.info("Adding statistic with id '{}' for playerMatch with id {}", dto.getStatistic().getId(), dto.getPlayerMatch().getId());
                     return playerStatisticService.createPlayerStatistic(dto);
                 })
                 .toList();

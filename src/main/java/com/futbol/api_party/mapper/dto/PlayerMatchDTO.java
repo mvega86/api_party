@@ -12,16 +12,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PlayerMatchDTO {
 
-    @NotNull(message = "Match ID is required.")
-    private Long matchId;
+    private Long id;
 
-    @NotNull(message = "Team ID is required.")
-    private Long teamId;
+    @NotNull(message = "Match is required.")
+    private MatchDTO match;
 
-    @NotNull(message = "Player ID is required.")
-    private Long playerId;
-
-    @NotNull(message = "In time is required.")
+    @NotNull(message = "Player is required.")
+    private PlayerDTO player;
 
     private LocalDateTime in;
     private LocalDateTime out;

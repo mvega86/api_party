@@ -1,6 +1,7 @@
 package com.futbol.api_party.service.implementation;
 
 import com.futbol.api_party.exception.EntityNotFoundException;
+import com.futbol.api_party.mapper.PlayerMapper;
 import com.futbol.api_party.mapper.TeamMapper;
 import com.futbol.api_party.mapper.dto.TeamDTO;
 import com.futbol.api_party.persistence.entity.Player;
@@ -23,14 +24,21 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class TeamService implements ITeamService {
-    @Autowired
+
     private TeamRepository teamRepository;
 
-    @Autowired
     private PlayerRepository playerRepository;
 
-    @Autowired
     private TeamMapper teamMapper;
+
+    private PlayerMapper playerMapper;
+
+    public TeamService(TeamRepository teamRepository, PlayerRepository playerRepository, TeamMapper teamMapper, PlayerMapper playerMapper) {
+        this.teamRepository = teamRepository;
+        this.playerRepository = playerRepository;
+        this.teamMapper = teamMapper;
+        this.playerMapper = playerMapper;
+    }
 
     @Override
     public List<TeamDTO> getAll() {
@@ -53,33 +61,12 @@ public class TeamService implements ITeamService {
     @Transactional
     public TeamDTO save(TeamDTO teamDTO) {
         log.info("Saving team: {}", teamDTO.getName());
-        List<Player> players = new ArrayList<>();
-
-        // If the DTO has player IDs, we look them up in the DB
-        if (teamDTO.getPlayerIds() != null) {
-            players = playerRepository.findAllById(teamDTO.getPlayerIds());
-        }
-
-        // Check for missing IDs in the response
-        if (players.size() != teamDTO.getPlayerIds().size()) {
-            List<Long> foundIds = players.stream().map(Player::getId).toList();
-            List<Long> missingIds = teamDTO.getPlayerIds().stream()
-                    .filter(id -> !foundIds.contains(id))
-                    .toList();
-            log.error("Some players do not exist: {}", missingIds);
-            throw new EntityNotFoundException("The following players do not exist: " + missingIds);
-        }
 
         try {
             // Converting the DTO to an entity with the players found
-            Team team = teamMapper.toEntity(teamDTO, players);
+            Team team = teamMapper.toEntity(teamDTO);
             team = teamRepository.save(team);
 
-            // Assigning the team to each player and update them
-            for (Player player : players) {
-                player.setTeam(team);
-            }
-            playerRepository.saveAll(players);
             log.info("Team saved successfully");
             return teamMapper.toDTO(team);
         } catch (Exception e){

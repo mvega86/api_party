@@ -12,11 +12,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PlayerStatisticDTO {
 
-    @NotNull(message = "PlayerMatch ID cannot be null.")
-    private Long playerMatchId;
+    private Long id;
 
-    @NotNull(message = "The id of the statistic is required.")
-    private Long statisticId;
+    @NotNull(message = "PlayerMatch cannot be null.")
+    private PlayerMatchDTO playerMatch;
+
+    @NotNull(message = "The statistic is required.")
+    private StatisticDTO statistic;
 
     @NotNull(message = "The value of statistics is required.")
     @DecimalMin(value = "0.0", message = "The value of the statistic cannot be negative.")

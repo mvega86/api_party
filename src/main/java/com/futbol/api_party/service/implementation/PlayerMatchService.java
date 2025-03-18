@@ -41,24 +41,19 @@ public class PlayerMatchService implements IPlayerMatchService {
     @Transactional
     public PlayerMatchDTO assignPlayerToMatch(PlayerMatchDTO playerMatchDTO) {
         log.info("Assigning player to match...");
-        Match match = matchRepository.findById(playerMatchDTO.getMatchId())
+        Match match = matchRepository.findById(playerMatchDTO.getMatch().getId())
                 .orElseThrow(() -> {
-                    log.error("Match, with id {}, not found.", playerMatchDTO.getMatchId());
+                    log.error("Match, with id {}, not found.", playerMatchDTO.getMatch().getId());
                     return new EntityNotFoundException("Match not found");
                 });
-        Team team = teamRepository.findById(playerMatchDTO.getTeamId())
+        Player player = playerRepository.findById(playerMatchDTO.getPlayer().getId())
                 .orElseThrow(() -> {
-                    log.error("Team, with id {}, not found.", playerMatchDTO.getTeamId());
-                    return new EntityNotFoundException("Team not found");
-                });
-        Player player = playerRepository.findById(playerMatchDTO.getPlayerId())
-                .orElseThrow(() -> {
-                    log.error("Player, with id {}, not found.", playerMatchDTO.getPlayerId());
+                    log.error("Player, with id {}, not found.", playerMatchDTO.getPlayer().getId());
                     return new EntityNotFoundException("Player not found");
                 });
 
         try {
-            PlayerMatch playerMatch = playerMatchMapper.toEntity(playerMatchDTO, match, team, player);
+            PlayerMatch playerMatch = playerMatchMapper.toEntity(playerMatchDTO, match, player);
             playerMatch = playerMatchRepository.save(playerMatch);
             log.info("Player match assigned successfully");
             return playerMatchMapper.toDTO(playerMatch);
@@ -73,6 +68,23 @@ public class PlayerMatchService implements IPlayerMatchService {
         log.info("Searching match with id {}...", matchId);
         return playerMatchRepository.findByMatchId(matchId).stream()
                 .map(playerMatchMapper::toDTO).toList();
+    }
+
+    @Override
+    @Transactional
+    public PlayerMatchDTO updatePlayerOutTime(Long playerMatchId, PlayerMatchDTO playerMatchDTO) {
+        PlayerMatch playerMatch = playerMatchRepository.findById(playerMatchId)
+                .orElseThrow(() -> new EntityNotFoundException("PlayerMatch not found"));
+
+        log.info("Updating out time for playerMatch ID: {}", playerMatchId);
+
+        if (playerMatchDTO.getOut() != null) {
+            playerMatch.setOut(playerMatchDTO.getOut());
+        }
+
+        playerMatchRepository.save(playerMatch);
+        log.info("Player out time updated.");
+        return playerMatchMapper.toDTO(playerMatch);
     }
 }
 

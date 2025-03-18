@@ -27,7 +27,7 @@ public class PlayerMatchController {
 
         return playerMatchDTOs.stream()
                 .map(dto -> {
-                    log.info("Assigning player {} to match {}", dto.getPlayerId(), dto.getMatchId());
+                    log.info("Assigning player {} to match {}", dto.getPlayer().getId(), dto.getMatch().getId());
                     return playerMatchService.assignPlayerToMatch(dto);
                 })
                 .toList();
@@ -38,5 +38,12 @@ public class PlayerMatchController {
         log.info("Request to fetch players for match ID: {}", matchId);
         return playerMatchService.getPlayersByMatch(matchId);
     }
+
+    @PatchMapping("/{matchId}")
+    public PlayerMatchDTO updatePlayerOutTime(@PathVariable Long playerMatchId, @RequestBody PlayerMatchDTO playerMatchDTO) {
+        log.info("Request to update out time for playerMatch ID: {}", playerMatchId);
+        return playerMatchService.updatePlayerOutTime(playerMatchId, playerMatchDTO);
+    }
+
 }
 

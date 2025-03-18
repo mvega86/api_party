@@ -1,5 +1,7 @@
 package com.futbol.api_party.mapper;
 
+import com.futbol.api_party.mapper.dto.PlayerDTO;
+import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.mapper.dto.TeamDTO;
 import com.futbol.api_party.persistence.entity.Player;
 import com.futbol.api_party.persistence.entity.Team;
@@ -19,20 +21,14 @@ public class TeamMapper {
         dto.setId(team.getId());
         dto.setName(team.getName());
         dto.setAcronym(team.getAcronym());
-        dto.setPlayerIds(
-                team.getPlayers() != null
-                        ? team.getPlayers().stream().map(Player::getId).collect(Collectors.toList())
-                        : new ArrayList<>()
-        );
         return dto;
     }
 
-    public Team toEntity(TeamDTO dto, List<Player> players) {
+    public Team toEntity(TeamDTO dto) {
         Team team = new Team();
         team.setId(dto.getId());
         team.setName(dto.getName());
         team.setAcronym(dto.getAcronym());
-        team.setPlayers(players);
         return team;
     }
 }

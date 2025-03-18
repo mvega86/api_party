@@ -16,5 +16,4 @@ public class TeamDTO {
     private String name;
     @NotBlank(message = "Acronym is required")
     private String acronym;
-    private List<Long> playerIds;
 }

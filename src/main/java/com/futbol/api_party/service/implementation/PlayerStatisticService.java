@@ -39,13 +39,13 @@ public class PlayerStatisticService implements IPlayerStatisticService {
     @Transactional
     public PlayerStatisticDTO createPlayerStatistic(PlayerStatisticDTO playerStatisticDTO) {
         log.info("Creating match statistic...");
-        PlayerMatch playerMatch = playerMatchRepository.findById(playerStatisticDTO.getPlayerMatchId())
+        PlayerMatch playerMatch = playerMatchRepository.findById(playerStatisticDTO.getPlayerMatch().getId())
                 .orElseThrow(() -> {
-                    log.error("PlayerMatch, with id {}, not found.", playerStatisticDTO.getPlayerMatchId());
+                    log.error("PlayerMatch, with id {}, not found.", playerStatisticDTO.getPlayerMatch().getId());
                     return new EntityNotFoundException("Player match not found.");
                 });
 
-        Statistic statistic = statisticRepository.findById(playerStatisticDTO.getStatisticId())
+        Statistic statistic = statisticRepository.findById(playerStatisticDTO.getStatistic().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Statistic not found"));
 
 

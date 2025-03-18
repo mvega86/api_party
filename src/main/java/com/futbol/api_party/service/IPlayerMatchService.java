@@ -7,5 +7,7 @@ import java.util.List;
 public interface IPlayerMatchService {
     PlayerMatchDTO assignPlayerToMatch(PlayerMatchDTO playerMatchDTO);
     List<PlayerMatchDTO> getPlayersByMatch(Long matchId);
+    PlayerMatchDTO updatePlayerOutTime(Long playerMatchId, PlayerMatchDTO playerMatchDTO);
+
 }
 

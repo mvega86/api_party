@@ -8,5 +8,7 @@ public interface IMatchService {
     MatchDTO createMatch(MatchDTO matchDTO);
     List<MatchDTO> getAllMatches();
     MatchDTO getMatchById(Long matchId);
+    MatchDTO updateMatchTimes(Long matchId, MatchDTO matchDTO);
+
 }
 

@@ -1,5 +1,6 @@
 package com.futbol.api_party.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.futbol.api_party.persistence.audit.AuditModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -40,6 +41,7 @@ public class Player extends AuditModel {
 
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = true)
+    @JsonBackReference
     private Team team;
 
 }

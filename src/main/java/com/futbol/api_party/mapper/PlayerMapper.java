@@ -8,6 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class PlayerMapper {
 
+    private TeamMapper teamMapper;
+
+    public PlayerMapper(TeamMapper teamMapper) {
+        this.teamMapper = teamMapper;
+    }
+
     public PlayerDTO toDTO(Player player){
         return new PlayerDTO(
                 player.getId(),
@@ -16,10 +22,10 @@ public class PlayerMapper {
                 player.getJerseyNumber(),
                 player.getBirthDate(),
                 player.getAge(),
-                player.getTeam() != null ? player.getTeam().getId() : null // Ahora almacena solo el ID del equipo
+                player.getTeam() != null ? teamMapper.toDTO(player.getTeam()) : null // Ahora almacena solo el ID del equipo
         );
     }
-    public Player toEntity(PlayerDTO playerDTO, Team team){
+    public Player toEntity(PlayerDTO playerDTO){
         return new Player(
                 playerDTO.getId(),
                 playerDTO.getFullName(),
@@ -27,7 +33,7 @@ public class PlayerMapper {
                 playerDTO.getJerseyNumber(),
                 playerDTO.getBirthDate(),
                 playerDTO.getAge(),
-                team
+                teamMapper.toEntity(playerDTO.getTeam())
         );
     }
 }

@@ -12,67 +12,46 @@ public class MatchTimeUtil {
             return null;
         }
 
-        // Event outside the range of the match
-        if (eventTime.isBefore(match.getStartFirstTime()) || eventTime.isAfter(match.getEndSecondExtraTime())) {
-            return null;
-        }
-
-        int totalMinutes = 0;
-
-        // **First time with added time**
-        if (!eventTime.isAfter(match.getEndFirstTime())) {
+        // **PRIMER TIEMPO**
+        if (match.getStartFirstTime() != null && eventTime.isAfter(match.getStartFirstTime()) && match.getEndFirstTime()==null) {
             int minute = (int) Duration.between(match.getStartFirstTime(), eventTime).toMinutes();
-            if (minute > 45) {
-                return "45+" + (minute - 45);
-            }
-            return String.valueOf(minute);
+            return (minute >= 45) ? "45+" + (minute - 45) : String.valueOf(minute);
         }
 
-        totalMinutes += (int) Duration.between(match.getStartFirstTime(), match.getEndFirstTime()).toMinutes(); // 45 + agregado
-
-        // **If the event occurs during the first half break, it is invalid.**
-        if (eventTime.isBefore(match.getStartSecondTime())) {
-            return null;
+        // **DESCANSO PRIMER TIEMPO**
+        if (match.getEndFirstTime() != null && eventTime.isAfter(match.getEndFirstTime()) && match.getStartSecondTime()==null) {
+            return null; // Evento en el descanso → Inválido
         }
 
-        // **Second time with added time**
-        if (!eventTime.isAfter(match.getEndSecondTime())) {
-            int minute = totalMinutes + (int) Duration.between(match.getStartSecondTime(), eventTime).toMinutes();
-            if (minute > 90) {
-                return "90+" + (minute - 90);
-            }
-            return String.valueOf(minute);
+        // **SEGUNDO TIEMPO**
+        if (match.getStartSecondTime() != null && eventTime.isAfter(match.getStartSecondTime()) && match.getEndSecondTime()==null) {
+            int minute = (int) Duration.between(match.getStartSecondTime(), eventTime).toMinutes() + 45;
+            return (minute >= 90) ? "90+" + (minute - 90) : String.valueOf(minute);
         }
 
-        totalMinutes += (int) Duration.between(match.getStartSecondTime(), match.getEndSecondTime()).toMinutes(); // 90 + overtime
-
-        // **If the event occurs at halftime before the first overtime, it is invalid.**
-        if (eventTime.isBefore(match.getStartFirstExtraTime())) {
-            return null;
+        // **DESCANSO SEGUNDO TIEMPO**
+        if (match.getEndSecondTime() != null && eventTime.isAfter(match.getEndSecondTime()) && match.getStartFirstExtraTime()==null) {
+            return null; // Evento en el descanso → Inválido
         }
 
-        // **First extra time with added time**
-        if (!eventTime.isAfter(match.getEndFirstExtraTime())) {
-            int minute = totalMinutes + (int) Duration.between(match.getStartFirstExtraTime(), eventTime).toMinutes();
-            if (minute > 105) {
-                return "105+" + (minute - 105);
-            }
-            return String.valueOf(minute);
+        // **PRIMER TIEMPO EXTRA**
+        if (match.getStartFirstExtraTime() != null && eventTime.isAfter(match.getStartFirstExtraTime()) && match.getEndFirstExtraTime()==null) {
+            int minute = (int) Duration.between(match.getStartFirstExtraTime(), eventTime).toMinutes() + 90;
+            return (minute >= 105) ? "105+" + (minute - 105) : String.valueOf(minute);
         }
 
-        totalMinutes += 15; // First full extra time
-
-        // **If the event occurs at half-time before the second overtime, it is invalid.**
-        if (eventTime.isBefore(match.getStartSecondExtraTime())) {
-            return null;
+        // **DESCANSO PRIMER TIEMPO EXTRA**
+        if (match.getStartSecondExtraTime() != null && eventTime.isAfter(match.getEndFirstExtraTime()) && match.getStartSecondExtraTime()==null) {
+            return null; // Evento en el descanso → Inválido
         }
 
-        // **Second overtime with added time**
-        int minute = totalMinutes + (int) Duration.between(match.getStartSecondExtraTime(), eventTime).toMinutes();
-        if (minute > 120) {
-            return "120+" + (minute - 120);
+        // **SEGUNDO TIEMPO EXTRA**
+        if (match.getStartSecondExtraTime() != null && eventTime.isAfter(match.getStartSecondExtraTime()) && match.getEndSecondExtraTime()==null) {
+            int minute = (int) Duration.between(match.getStartSecondExtraTime(), eventTime).toMinutes() + 105;
+            return (minute >= 120) ? "120+" + (minute - 120) : String.valueOf(minute);
         }
-        return String.valueOf(minute);
+
+        return null; // Evento fuera del tiempo válido
     }
 }
 

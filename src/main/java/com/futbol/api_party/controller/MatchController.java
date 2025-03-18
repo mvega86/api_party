@@ -38,4 +38,10 @@ public class MatchController {
         log.info("Request to fetch match with ID: {}", matchId);
         return matchService.getMatchById(matchId);
     }
+
+    @PatchMapping("/{matchId}")
+    public MatchDTO updateMatchTimes(@PathVariable Long matchId, @RequestBody MatchDTO matchDTO) {
+        log.info("Request to update match times for match ID: {}", matchId);
+        return matchService.updateMatchTimes(matchId, matchDTO);
+    }
 }

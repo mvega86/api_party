@@ -1,13 +1,24 @@
 package com.futbol.api_party.mapper;
 
 import com.futbol.api_party.mapper.dto.MatchDTO;
+import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.persistence.entity.Match;
 import com.futbol.api_party.persistence.entity.Team;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 public class MatchMapper {
 
+    private final TeamMapper teamMapper;
+    private final PlayerMatchMapper playerMatchMapper;
+
+    public MatchMapper(TeamMapper teamMapper,@Lazy PlayerMatchMapper playerMatchMapper) {
+        this.teamMapper = teamMapper;
+        this.playerMatchMapper = playerMatchMapper;
+    }
     public Match toEntity(MatchDTO dto, Team homeTeam, Team awayTeam) {
         Match match = new Match();
         match.setHomeTeam(homeTeam);
@@ -24,17 +35,33 @@ public class MatchMapper {
     }
 
     public MatchDTO toDTO(Match match) {
-        MatchDTO dto = new MatchDTO();
-        dto.setHomeTeamId(match.getHomeTeam().getId());
-        dto.setAwayTeamId(match.getAwayTeam().getId());
-        dto.setStartFirstTime(match.getStartFirstTime());
-        dto.setEndFirstTime(match.getEndFirstTime());
-        dto.setStartSecondTime(match.getStartSecondTime());
-        dto.setEndSecondTime(match.getEndSecondTime());
-        dto.setStartFirstExtraTime(match.getStartFirstExtraTime());
-        dto.setEndFirstExtraTime(match.getEndFirstExtraTime());
-        dto.setStartSecondExtraTime(match.getStartSecondExtraTime());
-        dto.setEndSecondExtraTime(match.getEndSecondExtraTime());
-        return dto;
+        if (match == null) return null;
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(match.getId());
+        matchDTO.setHomeTeam(teamMapper.toDTO(match.getHomeTeam()));
+        matchDTO.setAwayTeam(teamMapper.toDTO(match.getAwayTeam()));
+        matchDTO.setStartFirstTime(match.getStartFirstTime());
+        matchDTO.setEndFirstTime(match.getEndFirstTime());
+        matchDTO.setStartSecondTime(match.getStartSecondTime());
+        matchDTO.setEndSecondTime(match.getEndSecondTime());
+        matchDTO.setStartFirstExtraTime(match.getStartFirstExtraTime());
+        matchDTO.setEndFirstExtraTime(match.getEndFirstExtraTime());
+        matchDTO.setStartSecondExtraTime(match.getStartSecondExtraTime());
+        matchDTO.setEndSecondExtraTime(match.getEndSecondExtraTime());
+
+        matchDTO.setPlayerMatches(
+                match.getPlayerMatches() != null ?
+                        match.getPlayerMatches().stream()
+                                .map(playerMatch -> {
+                                    PlayerMatchDTO dto = playerMatchMapper.toDTO(playerMatch);
+                                    dto.setMatch(null); // Evita ciclos recursivos
+                                    return dto;
+                                })
+                                .collect(Collectors.toList()) :
+                        null
+        );
+
+        return matchDTO;
     }
 }
