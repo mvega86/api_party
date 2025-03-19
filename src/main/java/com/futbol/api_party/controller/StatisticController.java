@@ -29,7 +29,7 @@ public class StatisticController {
         return statisticService.getAllStatistics();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public StatisticDTO updateStatistic(@Valid @RequestBody StatisticDTO statisticDTO) {
         log.info("Request to update statistic...");
         StatisticDTO statisticDTOOut = statisticService.updateStatistic(statisticDTO);
