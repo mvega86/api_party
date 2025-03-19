@@ -5,6 +5,7 @@ import com.futbol.api_party.mapper.PlayerMapper;
 import com.futbol.api_party.mapper.TeamMapper;
 import com.futbol.api_party.mapper.dto.TeamDTO;
 import com.futbol.api_party.persistence.entity.Player;
+import com.futbol.api_party.persistence.entity.Statistic;
 import com.futbol.api_party.persistence.entity.Team;
 import com.futbol.api_party.persistence.repository.PlayerRepository;
 import com.futbol.api_party.persistence.repository.TeamRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // =========================
@@ -87,5 +89,22 @@ public class TeamService implements ITeamService {
                 });
         teamRepository.deleteById(id);
         log.info("Team {} delete successfully.", team.getName());
+    }
+
+    @Override
+    public TeamDTO updateTeam(TeamDTO teamDTO) {
+        // Check if the statistic exist
+        log.info("Searching team with id {} to update...", teamDTO.getId());
+        Optional<Team> optionalTeam = teamRepository.findById(teamDTO.getId());
+        if (optionalTeam.isEmpty()) {
+            log.error("Team {} not found...", teamDTO.getName());
+            throw new EntityNotFoundException("Team '" + teamDTO.getName() + "' not exists.");
+        }
+
+        Team team = optionalTeam.get();
+        team.setName(teamDTO.getName());
+        team.setAcronym(teamDTO.getAcronym());
+
+        return teamMapper.toDTO(teamRepository.save(team));
     }
 }

@@ -1,5 +1,6 @@
 package com.futbol.api_party.controller;
 
+import com.futbol.api_party.mapper.dto.StatisticDTO;
 import com.futbol.api_party.mapper.dto.TeamDTO;
 import com.futbol.api_party.service.ITeamService;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import java.util.List;
 // CONTROLADOR TeamController
 // =========================
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/teams")
 public class TeamController {
@@ -48,5 +50,13 @@ public class TeamController {
         log.debug("Request received to delete team with ID: {}", id);
         teamService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public TeamDTO update(@Valid @RequestBody TeamDTO teamDTO) {
+        log.info("Request to update team...");
+        TeamDTO teamDTOOut = teamService.updateTeam(teamDTO);
+        log.info("Team updated.");
+        return teamDTOOut;
     }
 }
