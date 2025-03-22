@@ -20,10 +20,7 @@ public class PlayerDTO {
     private Long id;
     @NotBlank(message = "Full name is required")
     private String fullName;
-
-    @NotBlank(message = "Jersey name is required")
     private String jerseyName;
-
     @Min(value = 1, message = "The dorsal must be a positive number")
     private Integer jerseyNumber;
 

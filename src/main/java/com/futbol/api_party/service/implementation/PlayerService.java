@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,5 +86,33 @@ public class PlayerService implements IPlayerService {
                 });
         playerRepository.deleteById(id);
         log.info("Player {} delete successfully.", player.getFullName());
+    }
+
+    @Override
+    public PlayerDTO updateStatistic(PlayerDTO playerDTO) {
+        log.info("Updating player: {}", playerDTO.getFullName());
+
+        Team team = null;
+
+        // Checking if the DTO has an associated equipment ID and look for it in the DB
+        if (playerDTO.getTeam() != null) {
+            team = teamRepository.findById(playerDTO.getTeam().getId()).orElseThrow(
+                    () -> {
+                        log.error("Team with ID {} not found", playerDTO.getTeam().getId());
+                        return new EntityNotFoundException("Team with ID " + playerDTO.getTeam().getId() + " was not found.");
+                    });
+        }
+
+        try {
+            // Converting the DTO to an entity by passing it the equipment found
+            Player player = playerMapper.toEntity(playerDTO);
+            // Saving the player and return the DTO
+            player = playerRepository.save(player);
+            log.info("Player updated successfully");
+            return playerMapper.toDTO(player);
+        } catch (Exception e){
+            log.error("Unexpected error updating player: {}", e.getMessage());
+            throw new RuntimeException("Error updating player.");
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.futbol.api_party.controller;
 
 import com.futbol.api_party.mapper.dto.PlayerDTO;
+import com.futbol.api_party.mapper.dto.StatisticDTO;
 import com.futbol.api_party.service.IPlayerService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import java.util.List;
 // CONTROLADOR PlayerController
 // =========================
 @Slf4j
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/players")
 public class PlayerController {
@@ -48,5 +50,13 @@ public class PlayerController {
         log.debug("Request received to delete player with ID: {}", id);
         playerService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public PlayerDTO update(@Valid @RequestBody PlayerDTO playerDTO) {
+        log.info("Request to update player...");
+        PlayerDTO playerDTOOut = playerService.updateStatistic(playerDTO);
+        log.info("Player updated.");
+        return playerDTOOut;
     }
 }

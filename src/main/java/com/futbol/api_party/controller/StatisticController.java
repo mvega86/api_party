@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @Slf4j
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/statistics")
 public class StatisticController {
@@ -26,6 +26,7 @@ public class StatisticController {
 
     @GetMapping
     public List<StatisticDTO> getAllStatistics() {
+        log.info("Request to get all statistic...");
         return statisticService.getAllStatistics();
     }
 

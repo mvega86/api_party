@@ -33,7 +33,7 @@ public class PlayerMapper {
                 playerDTO.getJerseyNumber(),
                 playerDTO.getBirthDate(),
                 playerDTO.getAge(),
-                teamMapper.toEntity(playerDTO.getTeam())
+                playerDTO.getTeam() != null?teamMapper.toEntity(playerDTO.getTeam()):null
         );
     }
 }

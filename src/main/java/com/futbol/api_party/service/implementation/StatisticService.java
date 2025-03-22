@@ -44,9 +44,12 @@ public class StatisticService implements IStatisticService{
 
     @Override
     public List<StatisticDTO> getAllStatistics() {
-        return statisticRepository.findAll().stream()
+        log.info("Getting all statistics...");
+        List<StatisticDTO> statisticDTOList = statisticRepository.findAll().stream()
                 .map(statisticMapper::toDTO)
                 .toList();
+        log.info("Statistics done.");
+        return statisticDTOList;
     }
 
     @Override

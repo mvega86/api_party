@@ -12,4 +12,6 @@ public interface IPlayerService {
     PlayerDTO getById(Long id);
 
     void delete(Long id);
+
+    PlayerDTO updateStatistic(PlayerDTO playerDTO);
 }

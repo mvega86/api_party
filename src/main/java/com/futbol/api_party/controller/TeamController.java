@@ -15,7 +15,7 @@ import java.util.List;
 // CONTROLADOR TeamController
 // =========================
 @Slf4j
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/teams")
 public class TeamController {
