@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 // =========================
 // CONTROLADOR PlayerController
@@ -40,9 +41,13 @@ public class PlayerController {
     }
 
     @PostMapping
-    public ResponseEntity<PlayerDTO> save(@Valid @RequestBody PlayerDTO playerDTO) {
+    public ResponseEntity<Map<String, Object>> save(@Valid @RequestBody PlayerDTO playerDTO) {
         log.info("Request received to save player: {}", playerDTO.getFullName());
-        return ResponseEntity.ok(playerService.save(playerDTO));
+        PlayerDTO saved = playerService.save(playerDTO);
+        return ResponseEntity.ok(Map.of(
+                "message", "Successfully saved player!!!",
+                "player", saved
+        ));
     }
 
     @DeleteMapping("/{id}")
@@ -53,10 +58,13 @@ public class PlayerController {
     }
 
     @PutMapping
-    public PlayerDTO update(@Valid @RequestBody PlayerDTO playerDTO) {
+    public ResponseEntity<Map<String, Object>> update(@Valid @RequestBody PlayerDTO playerDTO) {
         log.info("Request to update player...");
         PlayerDTO playerDTOOut = playerService.updateStatistic(playerDTO);
         log.info("Player updated.");
-        return playerDTOOut;
+        return ResponseEntity.ok(Map.of(
+                "message", "Successfully updated player!!!",
+                "player", playerDTOOut
+        ));
     }
 }
