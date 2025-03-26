@@ -6,9 +6,11 @@ import com.futbol.api_party.service.IMatchService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/matches")
@@ -22,9 +24,13 @@ public class MatchController {
     }
 
     @PostMapping
-    public MatchDTO createMatch(@Valid @RequestBody MatchDTO matchDTO) {
+    public ResponseEntity<Map<String, Object>> createMatch(@Valid @RequestBody MatchDTO matchDTO) {
         log.info("Request to create match: {}", matchDTO);
-        return matchService.createMatch(matchDTO);
+        MatchDTO saved = matchService.createMatch(matchDTO);
+        return ResponseEntity.ok(Map.of(
+                "message", "Successfully saved match!!!",
+                "data", saved
+        ));
     }
 
     @GetMapping
@@ -39,9 +45,14 @@ public class MatchController {
         return matchService.getMatchById(matchId);
     }
 
-    @PatchMapping("/{matchId}")
-    public MatchDTO updateMatchTimes(@PathVariable Long matchId, @RequestBody MatchDTO matchDTO) {
-        log.info("Request to update match times for match ID: {}", matchId);
-        return matchService.updateMatchTimes(matchId, matchDTO);
+    @PutMapping("/{matchId}")
+    public ResponseEntity<Map<String, Object>> updateMatch(@PathVariable @RequestBody MatchDTO matchDTO) {
+        log.info("Request to update match: {}", matchDTO.getHomeTeam()+" vs "+matchDTO.getAwayTeam());
+        MatchDTO updated = matchService.updateMatchTimes(matchDTO);
+        log.info("Match updated.");
+        return ResponseEntity.ok(Map.of(
+                "message", "Successfully updated match!!!",
+                "data", updated
+        ));
     }
 }

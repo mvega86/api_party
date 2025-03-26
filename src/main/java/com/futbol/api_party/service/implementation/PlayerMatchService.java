@@ -86,7 +86,6 @@ public class PlayerMatchService implements IPlayerMatchService {
         }
 
         playerMatchRepository.save(playerMatch);
-        log.info("Player out time updated.");
         return playerMatchMapper.toDTO(playerMatch);
     }
 }

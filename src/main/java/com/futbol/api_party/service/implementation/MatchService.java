@@ -78,11 +78,11 @@ public class MatchService implements IMatchService {
 
     @Override
     @Transactional
-    public MatchDTO updateMatchTimes(Long matchId, MatchDTO matchDTO) {
-        Match match = matchRepository.findById(matchId)
+    public MatchDTO updateMatchTimes(MatchDTO matchDTO) {
+        Match match = matchRepository.findById(matchDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
-        log.info("Updating match times for match ID: {}", matchId);
+        log.info("Updating match times for match ID: {}", matchDTO.getId());
 
         // Verificar si se está actualizando el tiempo de inicio del primer tiempo
         if (matchDTO.getStartFirstTime() != null && !matchDTO.getStartFirstTime().equals(match.getStartFirstTime())) {

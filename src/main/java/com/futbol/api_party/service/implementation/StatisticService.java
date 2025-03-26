@@ -38,7 +38,6 @@ public class StatisticService implements IStatisticService{
         statistic.setName(statisticDTO.getName());
         statistic.setDescription(statisticDTO.getDescription());
         statistic.setUnit(statisticDTO.getUnit());
-
         return statisticMapper.toDTO(statisticRepository.save(statistic));
     }
 

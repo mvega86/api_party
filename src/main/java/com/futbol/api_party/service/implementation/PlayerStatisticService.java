@@ -53,7 +53,6 @@ public class PlayerStatisticService implements IPlayerStatisticService {
         try {
             PlayerStatistic playerStatistic = playerStatisticMapper.toEntity(playerStatisticDTO, playerMatch, statistic);
             playerStatistic = matchStatisticRepository.save(playerStatistic);
-            log.info("Match statistic created successfully");
             return playerStatisticMapper.toDTO(playerStatistic);
         }catch (Exception e){
             log.error("Error creating match statistic: {}", e.getMessage());

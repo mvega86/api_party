@@ -1,5 +1,6 @@
 package com.futbol.api_party.controller;
 
+import com.futbol.api_party.mapper.dto.PlayerDTO;
 import com.futbol.api_party.mapper.dto.StatisticDTO;
 import com.futbol.api_party.mapper.dto.TeamDTO;
 import com.futbol.api_party.service.ITeamService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 // =========================
 // CONTROLADOR TeamController
@@ -40,9 +42,13 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<TeamDTO> save(@Valid @RequestBody TeamDTO teamDTO) {
+    public ResponseEntity<Map<String, Object>> save(@Valid @RequestBody TeamDTO teamDTO) {
         log.info("Request received to save team: {}", teamDTO.getName());
-        return ResponseEntity.ok(teamService.save(teamDTO));
+        TeamDTO saved = teamService.save(teamDTO);
+        return ResponseEntity.ok(Map.of(
+                "message", "Successfully saved team!!!",
+                "data", saved
+        ));
     }
 
     @DeleteMapping("/{id}")
@@ -53,10 +59,13 @@ public class TeamController {
     }
 
     @PutMapping
-    public TeamDTO update(@Valid @RequestBody TeamDTO teamDTO) {
+    public ResponseEntity<Map<String, Object>> update(@Valid @RequestBody TeamDTO teamDTO) {
         log.info("Request to update team...");
         TeamDTO teamDTOOut = teamService.updateTeam(teamDTO);
         log.info("Team updated.");
-        return teamDTOOut;
+        return ResponseEntity.ok(Map.of(
+                "message", "Successfully updated team!!!",
+                "data", teamDTOOut
+        ));
     }
 }

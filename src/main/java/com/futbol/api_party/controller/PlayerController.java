@@ -46,7 +46,7 @@ public class PlayerController {
         PlayerDTO saved = playerService.save(playerDTO);
         return ResponseEntity.ok(Map.of(
                 "message", "Successfully saved player!!!",
-                "player", saved
+                "data", saved
         ));
     }
 
@@ -64,7 +64,7 @@ public class PlayerController {
         log.info("Player updated.");
         return ResponseEntity.ok(Map.of(
                 "message", "Successfully updated player!!!",
-                "player", playerDTOOut
+                "data", playerDTOOut
         ));
     }
 }
