@@ -61,7 +61,7 @@ public class PlayerService implements IPlayerService {
 
     @Override
     public List<PlayerDTO> getAll() {
-        return playerRepository.findAll().stream().map(playerMapper::toDTO).collect(Collectors.toList());
+        return playerRepository.findAllByOrderByUpdatedAtDesc().stream().map(playerMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
