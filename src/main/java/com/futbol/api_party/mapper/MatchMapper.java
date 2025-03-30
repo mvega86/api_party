@@ -21,6 +21,7 @@ public class MatchMapper {
     }
     public Match toEntity(MatchDTO dto, Team homeTeam, Team awayTeam) {
         Match match = new Match();
+        match.setLocation(dto.getLocation());
         match.setHomeTeam(homeTeam);
         match.setAwayTeam(awayTeam);
         match.setStartFirstTime(dto.getStartFirstTime());
@@ -39,6 +40,7 @@ public class MatchMapper {
 
         MatchDTO matchDTO = new MatchDTO();
         matchDTO.setId(match.getId());
+        matchDTO.setLocation(match.getLocation());
         matchDTO.setHomeTeam(teamMapper.toDTO(match.getHomeTeam()));
         matchDTO.setAwayTeam(teamMapper.toDTO(match.getAwayTeam()));
         matchDTO.setStartFirstTime(match.getStartFirstTime());

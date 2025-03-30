@@ -17,6 +17,8 @@ public class MatchDTO {
 
     private Long id;
 
+    private String location;
+
     @NotNull(message = "Home team is required.")
     private TeamDTO homeTeam;
 
