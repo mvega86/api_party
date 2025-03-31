@@ -1,5 +1,6 @@
 package com.futbol.api_party.persistence.entity;
 
+import com.futbol.api_party.domain.enums.MatchState;
 import com.futbol.api_party.persistence.audit.AuditModel;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,6 +20,10 @@ public class Match extends AuditModel {
     private Long id;
 
     private String location;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MatchState state = MatchState.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "home_team_id", nullable = false)

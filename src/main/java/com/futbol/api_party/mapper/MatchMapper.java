@@ -19,11 +19,12 @@ public class MatchMapper {
         this.teamMapper = teamMapper;
         this.playerMatchMapper = playerMatchMapper;
     }
-    public Match toEntity(MatchDTO dto, Team homeTeam, Team awayTeam) {
+    public Match toEntity(MatchDTO dto) {
         Match match = new Match();
         match.setLocation(dto.getLocation());
-        match.setHomeTeam(homeTeam);
-        match.setAwayTeam(awayTeam);
+        match.setState(dto.getState());
+        match.setHomeTeam(teamMapper.toEntity(dto.getHomeTeam()));
+        match.setAwayTeam(teamMapper.toEntity(dto.getAwayTeam()));
         match.setStartFirstTime(dto.getStartFirstTime());
         match.setEndFirstTime(dto.getEndFirstTime());
         match.setStartSecondTime(dto.getStartSecondTime());
@@ -41,6 +42,7 @@ public class MatchMapper {
         MatchDTO matchDTO = new MatchDTO();
         matchDTO.setId(match.getId());
         matchDTO.setLocation(match.getLocation());
+        matchDTO.setState(match.getState());
         matchDTO.setHomeTeam(teamMapper.toDTO(match.getHomeTeam()));
         matchDTO.setAwayTeam(teamMapper.toDTO(match.getAwayTeam()));
         matchDTO.setStartFirstTime(match.getStartFirstTime());

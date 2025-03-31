@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/matches")
+@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 public class MatchController {
 
@@ -48,7 +49,7 @@ public class MatchController {
     @PutMapping("/{matchId}")
     public ResponseEntity<Map<String, Object>> updateMatch(@PathVariable @RequestBody MatchDTO matchDTO) {
         log.info("Request to update match: {}", matchDTO.getHomeTeam()+" vs "+matchDTO.getAwayTeam());
-        MatchDTO updated = matchService.updateMatchTimes(matchDTO);
+        MatchDTO updated = matchService.updateMatch(matchDTO);
         log.info("Match updated.");
         return ResponseEntity.ok(Map.of(
                 "message", "Successfully updated match!!!",

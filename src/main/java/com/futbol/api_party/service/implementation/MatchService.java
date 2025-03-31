@@ -37,19 +37,19 @@ public class MatchService implements IMatchService {
     @Transactional
     public MatchDTO createMatch(MatchDTO matchDTO) {
         log.info("Creating match...");
-        Team homeTeam = teamRepository.findById(matchDTO.getHomeTeam().getId())
+        teamRepository.findById(matchDTO.getHomeTeam().getId())
                 .orElseThrow(() -> {
                     log.error("Home team, with id {}, not found", matchDTO.getHomeTeam().getId());
                     return new EntityNotFoundException("Home team not found");
                 });
-        Team awayTeam = teamRepository.findById(matchDTO.getAwayTeam().getId())
+        teamRepository.findById(matchDTO.getAwayTeam().getId())
                 .orElseThrow(() -> {
                     log.error("Away team, with id {}, not found", matchDTO.getAwayTeam().getId());
                     return new EntityNotFoundException("Away team not found");
                 });
 
         try {
-            Match match = matchMapper.toEntity(matchDTO, homeTeam, awayTeam);
+            Match match = matchMapper.toEntity(matchDTO);
             match = matchRepository.save(match);
             log.info("Match created successfully");
             return matchMapper.toDTO(match);
@@ -78,14 +78,14 @@ public class MatchService implements IMatchService {
 
     @Override
     @Transactional
-    public MatchDTO updateMatchTimes(MatchDTO matchDTO) {
+    public MatchDTO updateMatch(MatchDTO matchDTO) {
         Match match = matchRepository.findById(matchDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
         log.info("Updating match times for match ID: {}", matchDTO.getId());
 
         // Verificar si se está actualizando el tiempo de inicio del primer tiempo
-        if (matchDTO.getStartFirstTime() != null && !matchDTO.getStartFirstTime().equals(match.getStartFirstTime())) {
+        /*if (matchDTO.getStartFirstTime() != null && !matchDTO.getStartFirstTime().equals(match.getStartFirstTime())) {
             LocalDateTime previousStart = match.getStartFirstTime();
             match.setStartFirstTime(matchDTO.getStartFirstTime());
 
@@ -102,8 +102,8 @@ public class MatchService implements IMatchService {
         if (matchDTO.getStartFirstExtraTime() != null) match.setStartFirstExtraTime(matchDTO.getStartFirstExtraTime());
         if (matchDTO.getEndFirstExtraTime() != null) match.setEndFirstExtraTime(matchDTO.getEndFirstExtraTime());
         if (matchDTO.getStartSecondExtraTime() != null) match.setStartSecondExtraTime(matchDTO.getStartSecondExtraTime());
-        if (matchDTO.getEndSecondExtraTime() != null) match.setEndSecondExtraTime(matchDTO.getEndSecondExtraTime());
-
+        if (matchDTO.getEndSecondExtraTime() != null) match.setEndSecondExtraTime(matchDTO.getEndSecondExtraTime());*/
+        match = matchMapper.toEntity(matchDTO);
         matchRepository.save(match);
         log.info("Match times updated.");
         return matchMapper.toDTO(match);
