@@ -9,6 +9,7 @@ public interface IMatchService {
     List<MatchDTO> getAllMatches();
     MatchDTO getMatchById(Long matchId);
     MatchDTO updateMatch(MatchDTO matchDTO);
+    void delete(Long id);
 
 }
 

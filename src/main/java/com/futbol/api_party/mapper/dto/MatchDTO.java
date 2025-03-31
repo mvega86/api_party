@@ -18,8 +18,10 @@ public class MatchDTO {
 
     private Long id;
 
+    @NotNull(message = "Location match is required.")
     private String location;
 
+    @NotNull(message = "State is required.")
     private MatchState state;
 
     @NotNull(message = "Home team is required.")
@@ -29,7 +31,7 @@ public class MatchDTO {
     private TeamDTO awayTeam;
 
     @NotNull(message = "The date and time of the match is required.")
-    //@FutureOrPresent(message = "The date of the match cannot be earlier than the current time.")
+    @FutureOrPresent(message = "The date of the match cannot be earlier than the current time.")
     private LocalDateTime startFirstTime;
     private LocalDateTime endFirstTime;
     private LocalDateTime startSecondTime;

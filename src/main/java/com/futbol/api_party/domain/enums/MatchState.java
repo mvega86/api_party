@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum MatchState {
-    PENDING("Pendiente"),
-    IN_PROGRESS("En progreso"),
-    STARTED("Iniciado"),
-    FINISHED("Finalizado");
+    PENDING("Pending"),
+    SUSPENDED("Suspended"),
+    STARTED("Started"),
+    FINISHED("Finished");
 
     private final String description;
 }

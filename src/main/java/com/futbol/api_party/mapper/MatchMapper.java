@@ -1,5 +1,6 @@
 package com.futbol.api_party.mapper;
 
+import com.futbol.api_party.domain.enums.MatchState;
 import com.futbol.api_party.mapper.dto.MatchDTO;
 import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.persistence.entity.Match;
@@ -21,8 +22,9 @@ public class MatchMapper {
     }
     public Match toEntity(MatchDTO dto) {
         Match match = new Match();
+        match.setId(dto.getId());
         match.setLocation(dto.getLocation());
-        match.setState(dto.getState());
+        match.setState(dto.getState() != null ? dto.getState() : MatchState.PENDING);
         match.setHomeTeam(teamMapper.toEntity(dto.getHomeTeam()));
         match.setAwayTeam(teamMapper.toEntity(dto.getAwayTeam()));
         match.setStartFirstTime(dto.getStartFirstTime());

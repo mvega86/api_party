@@ -6,7 +6,7 @@ import com.futbol.api_party.mapper.PlayerStatisticMapper;
 import com.futbol.api_party.persistence.entity.PlayerStatistic;
 import com.futbol.api_party.persistence.entity.PlayerMatch;
 import com.futbol.api_party.persistence.entity.Statistic;
-import com.futbol.api_party.persistence.repository.MatchStatisticRepository;
+import com.futbol.api_party.persistence.repository.PlayerStatisticRepository;
 import com.futbol.api_party.persistence.repository.PlayerMatchRepository;
 import com.futbol.api_party.persistence.repository.StatisticRepository;
 import com.futbol.api_party.service.IPlayerStatisticService;
@@ -20,16 +20,16 @@ import java.util.List;
 @Slf4j
 public class PlayerStatisticService implements IPlayerStatisticService {
 
-    private final MatchStatisticRepository matchStatisticRepository;
+    private final PlayerStatisticRepository playerStatisticRepository;
     private final PlayerMatchRepository playerMatchRepository;
     private final PlayerStatisticMapper playerStatisticMapper;
     private final StatisticRepository statisticRepository;
 
-    public PlayerStatisticService(MatchStatisticRepository matchStatisticRepository,
+    public PlayerStatisticService(PlayerStatisticRepository playerStatisticRepository,
                                   PlayerMatchRepository playerMatchRepository,
                                   PlayerStatisticMapper playerStatisticMapper,
                                   StatisticRepository statisticRepository) {
-        this.matchStatisticRepository = matchStatisticRepository;
+        this.playerStatisticRepository = playerStatisticRepository;
         this.playerMatchRepository = playerMatchRepository;
         this.playerStatisticMapper = playerStatisticMapper;
         this.statisticRepository = statisticRepository;
@@ -52,7 +52,7 @@ public class PlayerStatisticService implements IPlayerStatisticService {
 
         try {
             PlayerStatistic playerStatistic = playerStatisticMapper.toEntity(playerStatisticDTO, playerMatch, statistic);
-            playerStatistic = matchStatisticRepository.save(playerStatistic);
+            playerStatistic = playerStatisticRepository.save(playerStatistic);
             return playerStatisticMapper.toDTO(playerStatistic);
         }catch (Exception e){
             log.error("Error creating match statistic: {}", e.getMessage());
@@ -63,7 +63,7 @@ public class PlayerStatisticService implements IPlayerStatisticService {
     @Override
     public List<PlayerStatisticDTO> getStatisticsByPlayerMatch(Long playerMatchId) {
         log.info("Searching playermatch with id {}...", playerMatchId);
-        return matchStatisticRepository.findByPlayerMatchId(playerMatchId).stream()
+        return playerStatisticRepository.findByPlayerMatchId(playerMatchId).stream()
                 .map(playerStatisticMapper::toDTO).toList();
     }
 }

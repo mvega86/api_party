@@ -2,6 +2,7 @@ package com.futbol.api_party.controller;
 
 import com.futbol.api_party.mapper.dto.MatchDTO;
 import com.futbol.api_party.exception.EntityNotFoundException;
+import com.futbol.api_party.mapper.dto.TeamDTO;
 import com.futbol.api_party.service.IMatchService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/matches")
-@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 public class MatchController {
 
@@ -35,25 +35,33 @@ public class MatchController {
     }
 
     @GetMapping
-    public List<MatchDTO> getAllMatches() {
+    public ResponseEntity<List<MatchDTO>> getAllMatches() {
         log.info("Request to fetch all matches");
-        return matchService.getAllMatches();
+        return ResponseEntity.ok(matchService.getAllMatches());
     }
 
     @GetMapping("/{matchId}")
-    public MatchDTO getMatchById(@PathVariable Long matchId) {
+    public ResponseEntity<MatchDTO> getMatchById(@PathVariable Long matchId) {
         log.info("Request to fetch match with ID: {}", matchId);
-        return matchService.getMatchById(matchId);
+        MatchDTO matchDTO = matchService.getMatchById(matchId);
+        return matchDTO != null ? ResponseEntity.ok(matchDTO) : ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{matchId}")
-    public ResponseEntity<Map<String, Object>> updateMatch(@PathVariable @RequestBody MatchDTO matchDTO) {
-        log.info("Request to update match: {}", matchDTO.getHomeTeam()+" vs "+matchDTO.getAwayTeam());
+    @PutMapping
+    public ResponseEntity<Map<String, Object>> updateMatch(@RequestBody MatchDTO matchDTO) {
+        log.info("Request to update match: {}", matchDTO.getHomeTeam()+" VS "+matchDTO.getAwayTeam());
         MatchDTO updated = matchService.updateMatch(matchDTO);
         log.info("Match updated.");
         return ResponseEntity.ok(Map.of(
                 "message", "Successfully updated match!!!",
                 "data", updated
         ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        log.debug("Request received to delete match with ID: {}", id);
+        matchService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

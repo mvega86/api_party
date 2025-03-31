@@ -25,6 +25,9 @@ public class Team {
     @Column(name = "acronym", nullable = false)
     private String acronym;
 
+    @Column(name = "stadium", nullable = false)
+    private String stadium;
+
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Player> players;

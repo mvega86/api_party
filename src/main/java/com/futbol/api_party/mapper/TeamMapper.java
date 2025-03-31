@@ -21,6 +21,7 @@ public class TeamMapper {
         dto.setId(team.getId());
         dto.setName(team.getName());
         dto.setAcronym(team.getAcronym());
+        dto.setStadium(team.getStadium());
         return dto;
     }
 
@@ -29,6 +30,7 @@ public class TeamMapper {
         team.setId(dto.getId());
         team.setName(dto.getName());
         team.setAcronym(dto.getAcronym());
+        team.setStadium(dto.getStadium());
         return team;
     }
 }
