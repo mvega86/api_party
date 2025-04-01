@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     List<Player> findAllByOrderByUpdatedAtDesc();
+    List<Player> findByTeamIdOrderByFullNameAsc(Long teamId);
 }

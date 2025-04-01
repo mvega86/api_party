@@ -10,6 +10,7 @@ import com.futbol.api_party.persistence.repository.TeamRepository;
 import com.futbol.api_party.service.IPlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -60,8 +61,21 @@ public class PlayerService implements IPlayerService {
     }
 
     @Override
-    public List<PlayerDTO> getAll() {
-        return playerRepository.findAllByOrderByUpdatedAtDesc().stream().map(playerMapper::toDTO).collect(Collectors.toList());
+    public List<PlayerDTO> searchPlayers(String search) {
+        if (search != null && search.startsWith("team:")) {
+            Long teamId = Long.parseLong(search.split(":")[1]);
+            log.info("Searching players by {}...", search);
+            return playerRepository.findByTeamIdOrderByFullNameAsc(teamId)
+                    .stream()
+                    .map(playerMapper::toDTO)
+                    .collect(Collectors.toList());
+        }
+        log.info("Searching all players...");
+        return playerRepository.findAll(Sort.by("fullName"))
+                .stream()
+                .map(playerMapper::toDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override

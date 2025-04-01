@@ -7,7 +7,7 @@ import java.util.List;
 public interface IPlayerService {
     public PlayerDTO save(PlayerDTO playerDTO);
 
-    List<PlayerDTO> getAll();
+    List<PlayerDTO> searchPlayers(String search);
 
     PlayerDTO getById(Long id);
 

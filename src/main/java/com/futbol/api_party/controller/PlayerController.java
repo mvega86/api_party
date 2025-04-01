@@ -28,9 +28,9 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlayerDTO>> getAll() {
-        log.info("Request received to search players...");
-        return ResponseEntity.ok(playerService.getAll());
+    public ResponseEntity<List<PlayerDTO>> getAll(@RequestParam(value = "search", required = false) String search) {
+        log.info("Request to get all players with search: {}", search);
+        return ResponseEntity.ok(playerService.searchPlayers(search));
     }
 
     @GetMapping("/{id}")
