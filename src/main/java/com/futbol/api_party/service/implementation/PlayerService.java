@@ -71,7 +71,7 @@ public class PlayerService implements IPlayerService {
                     .collect(Collectors.toList());
         }
         log.info("Searching all players...");
-        return playerRepository.findAll(Sort.by("fullName"))
+        return playerRepository.findAllByOrderByUpdatedAtDesc()
                 .stream()
                 .map(playerMapper::toDTO)
                 .collect(Collectors.toList());

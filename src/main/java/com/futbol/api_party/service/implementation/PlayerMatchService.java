@@ -48,7 +48,7 @@ public class PlayerMatchService implements IPlayerMatchService {
                 });
         Player player = playerRepository.findById(playerMatchDTO.getPlayer().getId())
                 .orElseThrow(() -> {
-                    log.error("Player, with id {}, not found.", playerMatchDTO.getPlayer().getId());
+                    log.error("Player match, with id {}, not found.", playerMatchDTO.getPlayer().getId());
                     return new EntityNotFoundException("Player not found");
                 });
 
@@ -67,19 +67,23 @@ public class PlayerMatchService implements IPlayerMatchService {
     }
 
     @Override
-    public List<PlayerMatchDTO> getPlayersByMatch(Long matchId) {
-        log.info("Searching match with id {}...", matchId);
-        return playerMatchRepository.findByMatchId(matchId).stream()
-                .map(playerMatchMapper::toDTO).toList();
+    public PlayerMatchDTO getById(Long id) {
+        log.info("Searching match with id {}...", id);
+        PlayerMatch playerMatch = playerMatchRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Player, with id {}, not found.", id);
+                    return new EntityNotFoundException("PlayerMatch not found");
+                });
+        return playerMatchMapper.toDTO(playerMatch);
     }
 
     @Override
     @Transactional
-    public PlayerMatchDTO updatePlayerOutTime(Long playerMatchId, PlayerMatchDTO playerMatchDTO) {
-        PlayerMatch playerMatch = playerMatchRepository.findById(playerMatchId)
+    public PlayerMatchDTO updatePlayerMatch(PlayerMatchDTO playerMatchDTO) {
+        PlayerMatch playerMatch = playerMatchRepository.findById(playerMatchDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("PlayerMatch not found"));
 
-        log.info("Updating out time for playerMatch ID: {}", playerMatchId);
+        log.info("Updating out time for playerMatch ID: {}", playerMatchDTO.getId());
 
         if (playerMatchDTO.getOut() != null) {
             playerMatch.setOut(playerMatchDTO.getOut());
@@ -87,6 +91,18 @@ public class PlayerMatchService implements IPlayerMatchService {
 
         playerMatchRepository.save(playerMatch);
         return playerMatchMapper.toDTO(playerMatch);
+    }
+
+    public void delete(Long id) {
+        log.info("Searching player match with id {} to delete...", id);
+        PlayerMatch playerMatch = playerMatchRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Team with ID {} not found", id);
+                    return new EntityNotFoundException("Team with ID " + id + " was not found.");
+
+                });
+        playerMatchRepository.deleteById(id);
+        log.info("Match {} delete successfully.", playerMatch.getId());
     }
 }
 

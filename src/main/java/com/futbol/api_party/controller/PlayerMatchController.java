@@ -42,21 +42,28 @@ public class PlayerMatchController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{matchId}")
-    public List<PlayerMatchDTO> getPlayersByMatch(@PathVariable Long matchId) {
-        log.info("Request to fetch players for match ID: {}", matchId);
-        return playerMatchService.getPlayersByMatch(matchId);
+    @GetMapping("/{id}")
+    public ResponseEntity<PlayerMatchDTO> getById(@PathVariable Long id) {
+        log.info("Request to fetch players for match ID: {}", id);
+        return ResponseEntity.ok(playerMatchService.getById(id));
     }
 
-    @PatchMapping("/{matchId}")
-    public ResponseEntity<Map<String, Object>> updatePlayerOutTime(@PathVariable Long playerMatchId, @RequestBody PlayerMatchDTO playerMatchDTO) {
-        log.info("Request to update playerMatch, ID: {}", playerMatchId);
-        PlayerMatchDTO playerMatchDTO1 = playerMatchService.updatePlayerOutTime(playerMatchId, playerMatchDTO);
+    @PutMapping()
+    public ResponseEntity<Map<String, Object>> updatePlayerMatch(@RequestBody PlayerMatchDTO playerMatchDTO) {
+        log.info("Request to update playerMatch, ID: {}", playerMatchDTO.getId());
+        PlayerMatchDTO playerMatchDTO1 = playerMatchService.updatePlayerMatch(playerMatchDTO);
         log.info("Player match updated.");
         return ResponseEntity.ok(Map.of(
                 "message", "Player match updated successfully!!!",
                 "data", playerMatchDTO1
         ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        log.debug("Request received to delete player match with ID: {}", id);
+        playerMatchService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
