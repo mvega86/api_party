@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -38,10 +39,27 @@ public class PlayerMatchService implements IPlayerMatchService {
     }
 
     @Override
+    public List<PlayerMatchDTO> search(String search) {
+        if (search != null && search.startsWith("match:")) {
+            Long matchId = Long.parseLong(search.split(":")[1]);
+            log.info("Searching players by {}...", search);
+            return playerMatchRepository.findByMatchId(matchId)
+                    .stream()
+                    .map(playerMatchMapper::toDTO)
+                    .collect(Collectors.toList());
+        }
+        log.info("Searching all players...");
+        return playerMatchRepository.findAll()
+                .stream()
+                .map(playerMatchMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public PlayerMatchDTO assignPlayerToMatch(PlayerMatchDTO playerMatchDTO) {
         log.info("Assigning player to match...");
-        Match match = matchRepository.findById(playerMatchDTO.getMatch().getId())
+        matchRepository.findById(playerMatchDTO.getMatch().getId())
                 .orElseThrow(() -> {
                     log.error("Match, with id {}, not found.", playerMatchDTO.getMatch().getId());
                     return new EntityNotFoundException("Match not found");
@@ -53,10 +71,7 @@ public class PlayerMatchService implements IPlayerMatchService {
                 });
 
         try {
-            PlayerMatch playerMatch = playerMatchMapper.toEntity(playerMatchDTO, match, player);
-            if (match.getStartFirstTime()!=null){
-                playerMatch.setIn(match.getStartFirstTime());
-            }
+            PlayerMatch playerMatch = playerMatchMapper.toEntity(playerMatchDTO, player.getTeam());
             playerMatch = playerMatchRepository.save(playerMatch);
             log.info("Player match assigned successfully");
             return playerMatchMapper.toDTO(playerMatch);

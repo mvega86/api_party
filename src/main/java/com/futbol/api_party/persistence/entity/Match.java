@@ -1,5 +1,7 @@
 package com.futbol.api_party.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.futbol.api_party.domain.enums.MatchState;
 import com.futbol.api_party.persistence.audit.AuditModel;
 import jakarta.persistence.*;
@@ -43,6 +45,7 @@ public class Match extends AuditModel {
     private LocalDateTime endSecondExtraTime;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PlayerMatch> playerMatches;
 }
 

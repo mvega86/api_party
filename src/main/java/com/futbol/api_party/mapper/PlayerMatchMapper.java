@@ -5,6 +5,7 @@ import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.persistence.entity.Match;
 import com.futbol.api_party.persistence.entity.Player;
 import com.futbol.api_party.persistence.entity.PlayerMatch;
+import com.futbol.api_party.persistence.entity.Team;
 import com.futbol.api_party.utils.MatchTimeUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -19,10 +20,10 @@ public class PlayerMatchMapper {
         this.matchMapper = matchMapper;
         this.playerMapper = playerMapper;
     }
-    public PlayerMatch toEntity(PlayerMatchDTO dto, Match match, Player player) {
+    public PlayerMatch toEntity(PlayerMatchDTO dto, Team team) {
         PlayerMatch playerMatch = new PlayerMatch();
-        playerMatch.setMatch(match);
-        playerMatch.setPlayer(player);
+        playerMatch.setMatch(matchMapper.toEntity(dto.getMatch()));
+        playerMatch.setPlayer(playerMapper.toEntity(dto.getPlayer(), team));
         playerMatch.setIn(dto.getIn());
         playerMatch.setOut(dto.getOut());
         return playerMatch;
@@ -33,11 +34,16 @@ public class PlayerMatchMapper {
         dto.setId(playerMatch.getId());
 
         // 🔹 Se evita anidar `MatchDTO` completo para prevenir recursividad
-        dto.setMatch(null);
+
+        if(playerMatch.getMatch() != null) {
+            dto.setMatch(matchMapper.toDTO(playerMatch.getMatch()));
+        }else{
+            dto.setMatch(null);
+        }
 
         // 🔹 Se evita anidar `PlayerDTO` completo para prevenir recursividad
         PlayerDTO playerDTO = playerMapper.toDTO(playerMatch.getPlayer());
-        playerDTO.setTeam(null); // Evita ciclos recursivos
+        playerDTO.setTeamId(playerMatch.getPlayer().getTeam().getId()); // Evita ciclos recursivos
         dto.setPlayer(playerDTO);
 
         dto.setIn(playerMatch.getIn());

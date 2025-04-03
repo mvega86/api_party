@@ -56,18 +56,6 @@ public class MatchMapper {
         matchDTO.setStartSecondExtraTime(match.getStartSecondExtraTime());
         matchDTO.setEndSecondExtraTime(match.getEndSecondExtraTime());
 
-        matchDTO.setPlayerMatches(
-                match.getPlayerMatches() != null ?
-                        match.getPlayerMatches().stream()
-                                .map(playerMatch -> {
-                                    PlayerMatchDTO dto = playerMatchMapper.toDTO(playerMatch);
-                                    dto.setMatch(null); // Evita ciclos recursivos
-                                    return dto;
-                                })
-                                .collect(Collectors.toList()) :
-                        null
-        );
-
         return matchDTO;
     }
 }

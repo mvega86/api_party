@@ -40,7 +40,5 @@ public class MatchDTO {
     private LocalDateTime endFirstExtraTime;
     private LocalDateTime startSecondExtraTime;
     private LocalDateTime endSecondExtraTime;
-
-    private List<PlayerMatchDTO> playerMatches;
 }
 

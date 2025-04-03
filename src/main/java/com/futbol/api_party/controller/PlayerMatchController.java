@@ -1,5 +1,6 @@
 package com.futbol.api_party.controller;
 
+import com.futbol.api_party.mapper.dto.PlayerDTO;
 import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.exception.EntityNotFoundException;
 import com.futbol.api_party.service.IPlayerMatchService;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/player-matches")
+@RequestMapping("/api/v1/players-match")
 @Slf4j
 public class PlayerMatchController {
 
@@ -22,6 +23,13 @@ public class PlayerMatchController {
 
     public PlayerMatchController(IPlayerMatchService playerMatchService) {
         this.playerMatchService = playerMatchService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PlayerMatchDTO>> getAll(@RequestParam(value = "search", required = false) String search) {
+        log.info("Request to get all players match with search: {}", search);
+        List<PlayerMatchDTO> playerMatchDTOList = playerMatchService.search(search);
+        return ResponseEntity.ok(playerMatchDTOList);
     }
 
     @PostMapping

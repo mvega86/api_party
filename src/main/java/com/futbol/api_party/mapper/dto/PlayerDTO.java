@@ -27,5 +27,5 @@ public class PlayerDTO {
     @Past(message = "The date of birth must be a date in the past")
     private LocalDate birthDate;
     private Integer age;
-    private TeamDTO team;
+    private Long teamId;
 }
