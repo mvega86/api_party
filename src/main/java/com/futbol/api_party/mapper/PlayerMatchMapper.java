@@ -22,6 +22,7 @@ public class PlayerMatchMapper {
     }
     public PlayerMatch toEntity(PlayerMatchDTO dto, Team team) {
         PlayerMatch playerMatch = new PlayerMatch();
+        playerMatch.setId(dto.getId());
         playerMatch.setMatch(matchMapper.toEntity(dto.getMatch()));
         playerMatch.setPlayer(playerMapper.toEntity(dto.getPlayer(), team));
         playerMatch.setIn(dto.getIn());

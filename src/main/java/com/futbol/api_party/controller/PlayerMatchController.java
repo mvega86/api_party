@@ -27,22 +27,22 @@ public class PlayerMatchController {
 
     @GetMapping
     public ResponseEntity<List<PlayerMatchDTO>> getAll(@RequestParam(value = "search", required = false) String search) {
-        log.info("Request to get all players match with search: {}", search);
+        log.info("Logger: Request to get all players match with search: {}", search);
         List<PlayerMatchDTO> playerMatchDTOList = playerMatchService.search(search);
         return ResponseEntity.ok(playerMatchDTOList);
     }
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> assignPlayersToMatch(@Valid @RequestBody List<PlayerMatchDTO> playerMatchDTOs) {
-        log.info("Assigning {} players to matches", playerMatchDTOs.size());
+        log.info("Logger: Assigning {} players to matches", playerMatchDTOs.size());
 
         List<PlayerMatchDTO> playerMatchDTOList  = playerMatchDTOs.stream()
                 .map(dto -> {
-                    log.info("Assigning player {} to match {}", dto.getPlayer().getId(), dto.getMatch().getId());
+                    log.info("Logger: Assigning player {} to match {}", dto.getPlayer().getId(), dto.getMatch().getId());
                     return playerMatchService.assignPlayerToMatch(dto);
                 })
                 .toList();
-        log.info("Player match assigned successfully");
+        log.info("Logger: Player match assigned successfully");
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Player match assigned successfully");
         response.put("data", playerMatchDTOList);
@@ -52,15 +52,15 @@ public class PlayerMatchController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlayerMatchDTO> getById(@PathVariable Long id) {
-        log.info("Request to fetch players for match ID: {}", id);
+        log.info("Logger: Request to fetch players for match ID: {}", id);
         return ResponseEntity.ok(playerMatchService.getById(id));
     }
 
     @PutMapping()
     public ResponseEntity<Map<String, Object>> updatePlayerMatch(@RequestBody PlayerMatchDTO playerMatchDTO) {
-        log.info("Request to update playerMatch, ID: {}", playerMatchDTO.getId());
+        log.info("Logger: Request to update playerMatch, ID: {}", playerMatchDTO.getId());
         PlayerMatchDTO playerMatchDTO1 = playerMatchService.updatePlayerMatch(playerMatchDTO);
-        log.info("Player match updated.");
+        log.info("Logger: Player match updated.");
         return ResponseEntity.ok(Map.of(
                 "message", "Player match updated successfully!!!",
                 "data", playerMatchDTO1
@@ -69,7 +69,7 @@ public class PlayerMatchController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        log.debug("Request received to delete player match with ID: {}", id);
+        log.debug("Logger: Request received to delete player match with ID: {}", id);
         playerMatchService.delete(id);
         return ResponseEntity.noContent().build();
     }
