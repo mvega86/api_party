@@ -33,8 +33,9 @@ public class PlayerMatch extends AuditModel {
         private Player player;
 
         @Column(name = "in_")
-        private LocalDateTime in; // Fecha y hora exacta de entrada
-        private LocalDateTime out; // Fecha y hora exacta de salida
+        private LocalDateTime inTime; // Exact date and time of entry
+        @Column(name = "out")
+        private LocalDateTime outTime; // Exact date and time of departure
 
 }
 

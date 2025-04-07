@@ -25,8 +25,8 @@ public class PlayerMatchMapper {
         playerMatch.setId(dto.getId());
         playerMatch.setMatch(matchMapper.toEntity(dto.getMatch()));
         playerMatch.setPlayer(playerMapper.toEntity(dto.getPlayer(), team));
-        playerMatch.setIn(dto.getIn());
-        playerMatch.setOut(dto.getOut());
+        playerMatch.setInTime(dto.getInTime());
+        playerMatch.setOutTime(dto.getOutTime());
         return playerMatch;
     }
 
@@ -47,8 +47,8 @@ public class PlayerMatchMapper {
         playerDTO.setTeamId(playerMatch.getPlayer().getTeam().getId()); // Evita ciclos recursivos
         dto.setPlayer(playerDTO);
 
-        dto.setIn(playerMatch.getIn());
-        dto.setOut(playerMatch.getOut());
+        dto.setInTime(playerMatch.getInTime());
+        dto.setOutTime(playerMatch.getOutTime());
 
         return dto;
     }

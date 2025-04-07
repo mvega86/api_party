@@ -14,7 +14,5 @@ import java.util.List;
 public interface PlayerMatchRepository extends JpaRepository<PlayerMatch, Long> {
     List<PlayerMatch> findByMatchId(Long matchId); // Getting players from a match
     List<PlayerMatch> findByPlayerId(Long playerId); // Get matches from a player
-    /*@Query("SELECT pm FROM PlayerMatch pm WHERE pm.match = :match AND pm.in = :previousStart")
-    List<PlayerMatch> findByMatchAndIn(@Param("match") Match match, @Param("previousStart") LocalDateTime previousStart);*/
 }
 

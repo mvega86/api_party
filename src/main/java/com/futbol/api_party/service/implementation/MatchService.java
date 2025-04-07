@@ -10,6 +10,7 @@ import com.futbol.api_party.persistence.repository.MatchRepository;
 import com.futbol.api_party.persistence.repository.PlayerMatchRepository;
 import com.futbol.api_party.persistence.repository.TeamRepository;
 import com.futbol.api_party.service.IMatchService;
+import com.futbol.api_party.service.IPlayerMatchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +25,15 @@ public class MatchService implements IMatchService {
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final MatchMapper matchMapper;
+    private final IPlayerMatchService playerMatchService;
     private final PlayerMatchRepository playerMatchRepository;
 
-    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, MatchMapper matchMapper, PlayerMatchRepository playerMatchRepository) {
+    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, MatchMapper matchMapper, PlayerMatchRepository playerMatchRepository, IPlayerMatchService playerMatchService, PlayerMatchRepository playerMatchRepository1) {
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.matchMapper = matchMapper;
-        this.playerMatchRepository = playerMatchRepository;
+        this.playerMatchService = playerMatchService;
+        this.playerMatchRepository = playerMatchRepository1;
     }
 
     @Override
@@ -84,18 +87,38 @@ public class MatchService implements IMatchService {
     @Override
     @Transactional
     public MatchDTO updateMatch(MatchDTO matchDTO) {
-        matchRepository.findById(matchDTO.getId())
+        Match existing = matchRepository.findById(matchDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
         if (matchDTO.getHomeTeam().getId().equals(matchDTO.getAwayTeam().getId())) {
             throw new IllegalArgumentException("El equipo local y visitante no pueden ser el mismo.");
         }
 
+        // Save the previous value in case comparisons are needed
+        LocalDateTime oldStart = existing.getStartFirstTime();
+        LocalDateTime newStart = matchDTO.getStartFirstTime();
+
+        List<PlayerMatch> players = existing.getPlayerMatches();
+
         log.info("Logger: Updating match times for match ID: {}", matchDTO.getId());
 
         Match match = matchMapper.toEntity(matchDTO);
+        match.setPlayerMatches(existing.getPlayerMatches());
         matchRepository.save(match);
         log.info("Logger: Match times updated.");
+
+        if (newStart != null && (oldStart == null || !oldStart.equals(newStart))) {
+            log.info("Logger: Updating players match intime field...");
+            players.stream()
+                    .filter(pm ->
+                            (oldStart == null && pm.getInTime() != null) ||
+                            (oldStart != null && oldStart.equals(pm.getInTime()))
+                    )
+                    .forEach(pm -> pm.setInTime(newStart));
+            playerMatchRepository.saveAll(players);
+            log.info("Logger: Players match updated successfully.");
+        }
+
         return matchMapper.toDTO(match);
     }
 
@@ -105,9 +128,15 @@ public class MatchService implements IMatchService {
         Match match = matchRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Team with ID {} not found", id);
-                    return new EntityNotFoundException("Team with ID " + id + " was not found.");
+                    return new EntityNotFoundException("Match with ID " + id + " was not found.");
 
                 });
+        /*PlayerMatch playerMatch = playerMatchRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("PlayerMatch not found"));
+
+        if (!playerMatch.getPlayerStatistics().isEmpty()) {
+            throw new IllegalStateException("Cannot delete PlayerMatch with associated statistics");
+        }*/
         matchRepository.deleteById(id);
         log.info("Match {} delete successfully.", match.getHomeTeam().getAcronym()+" VS "+match.getAwayTeam().getAcronym());
     }

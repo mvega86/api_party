@@ -20,8 +20,8 @@ public class PlayerMatchDTO {
     @NotNull(message = "Player is required.")
     private PlayerDTO player;
 
-    private LocalDateTime in;
-    private LocalDateTime out;
+    private LocalDateTime inTime;
+    private LocalDateTime outTime;
 
     private String inMinuteFormatted;
     private String outMinuteFormatted;
