@@ -1,5 +1,6 @@
 package com.futbol.api_party.controller;
 
+import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.mapper.dto.PlayerStatisticDTO;
 import com.futbol.api_party.service.IPlayerStatisticService;
 import jakarta.validation.Valid;
@@ -22,20 +23,21 @@ public class PlayerStatisticController {
         this.playerStatisticService = playerStatisticService;
     }
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> createPlayerStatistics(@Valid @RequestBody List<PlayerStatisticDTO> playerStatisticDTOS) {
-        log.info("Assigning {} statistics to players", playerStatisticDTOS.size());
+    @GetMapping
+    public ResponseEntity<List<PlayerStatisticDTO>> getAll(@RequestParam(value = "search", required = false) String search) {
+        log.info("Logger: Request to get all players statistics with search: {}", search);
+        List<PlayerStatisticDTO> playerStatisticDTOList = playerStatisticService.search(search);
+        return ResponseEntity.ok(playerStatisticDTOList);
+    }
 
-        List<PlayerStatisticDTO> createdStats = playerStatisticDTOS.stream()
-                .map(dto -> {
-                    log.info("Adding statistic with id '{}' for playerMatch with id {}", dto.getStatistic().getId(), dto.getPlayerMatch().getId());
-                    return playerStatisticService.createPlayerStatistic(dto);
-                })
-                .toList();
-        log.info("Statistics player assigned successfully!!!");
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> createPlayerStatistics(@Valid @RequestBody PlayerStatisticDTO playerStatisticDTO) {
+        log.info("Assigning statistics to players with ID: {}", playerStatisticDTO.getId());
+        PlayerStatisticDTO createdStat = playerStatisticService.createPlayerStatistic(playerStatisticDTO);
+        log.info("Statistic player assigned successfully!!!");
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Statistics assigned successfully!!!");
-        response.put("data", createdStats);
+        response.put("message", "Statistic assigned successfully!!!");
+        response.put("data", createdStat);
 
         return ResponseEntity.ok(response);
     }
@@ -44,6 +46,13 @@ public class PlayerStatisticController {
     public List<PlayerStatisticDTO> getStatisticsByPlayerMatch(@PathVariable Long playerMatchId) {
         log.info("Request to fetch statistics for player match ID: {}", playerMatchId);
         return playerStatisticService.getStatisticsByPlayerMatch(playerMatchId);
+    }
+
+    @PutMapping
+    public ResponseEntity<PlayerStatisticDTO> updateStatistic(@RequestBody PlayerStatisticDTO dto) {
+        log.info("Request to fetch statistics for player match ID: {}", dto.getId());
+        PlayerStatisticDTO updated = playerStatisticService.update(dto);
+        return ResponseEntity.ok(updated);
     }
 }
 

@@ -28,10 +28,12 @@ public class PlayerStatistic extends AuditModel {
 
     @NotNull
     @Column(nullable = false)
-    private Double value;
-
-    @NotNull
-    @Column(nullable = false)
     private LocalDateTime timestamp;
+
+    private Double positionX;
+    private Double positionY;
+
+    @Column(length = 255)
+    private String observation;
 }
 

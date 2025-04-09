@@ -1,6 +1,9 @@
 package com.futbol.api_party.service.implementation;
 
 import com.futbol.api_party.exception.EntityNotFoundException;
+import com.futbol.api_party.mapper.PlayerMatchMapper;
+import com.futbol.api_party.mapper.StatisticMapper;
+import com.futbol.api_party.mapper.dto.PlayerMatchDTO;
 import com.futbol.api_party.mapper.dto.PlayerStatisticDTO;
 import com.futbol.api_party.mapper.PlayerStatisticMapper;
 import com.futbol.api_party.persistence.entity.PlayerStatistic;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -23,25 +27,46 @@ public class PlayerStatisticService implements IPlayerStatisticService {
     private final PlayerStatisticRepository playerStatisticRepository;
     private final PlayerMatchRepository playerMatchRepository;
     private final PlayerStatisticMapper playerStatisticMapper;
+    private final PlayerMatchMapper playerMatchMapper;
+    private final StatisticMapper statisticMapper;
     private final StatisticRepository statisticRepository;
 
     public PlayerStatisticService(PlayerStatisticRepository playerStatisticRepository,
                                   PlayerMatchRepository playerMatchRepository,
-                                  PlayerStatisticMapper playerStatisticMapper,
+                                  PlayerStatisticMapper playerStatisticMapper, PlayerMatchMapper playerMatchMapper, StatisticMapper statisticMapper,
                                   StatisticRepository statisticRepository) {
         this.playerStatisticRepository = playerStatisticRepository;
         this.playerMatchRepository = playerMatchRepository;
         this.playerStatisticMapper = playerStatisticMapper;
+        this.playerMatchMapper = playerMatchMapper;
+        this.statisticMapper = statisticMapper;
         this.statisticRepository = statisticRepository;
+    }
+
+    @Override
+    public List<PlayerStatisticDTO> search(String search) {
+        if (search != null && search.startsWith("match:")) {
+            /*Long matchId = Long.parseLong(search.split(":")[1]);
+            log.info("Searching players by {}...", search);
+            return playerStatisticRepository.findByMatchId(matchId)
+                    .stream()
+                    .map(playerStatisticMapper::toDTO)
+                    .collect(Collectors.toList());*/
+        }
+        log.info("Searching all players...");
+        return playerStatisticRepository.findAll()
+                .stream()
+                .map(playerStatisticMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public PlayerStatisticDTO createPlayerStatistic(PlayerStatisticDTO playerStatisticDTO) {
-        log.info("Creating match statistic...");
+        log.info("Logging: Creating match statistic...");
         PlayerMatch playerMatch = playerMatchRepository.findById(playerStatisticDTO.getPlayerMatch().getId())
                 .orElseThrow(() -> {
-                    log.error("PlayerMatch, with id {}, not found.", playerStatisticDTO.getPlayerMatch().getId());
+                    log.error("Logging: PlayerMatch, with id {}, not found.", playerStatisticDTO.getPlayerMatch().getId());
                     return new EntityNotFoundException("Player match not found.");
                 });
 
@@ -55,16 +80,47 @@ public class PlayerStatisticService implements IPlayerStatisticService {
             playerStatistic = playerStatisticRepository.save(playerStatistic);
             return playerStatisticMapper.toDTO(playerStatistic);
         }catch (Exception e){
-            log.error("Error creating match statistic: {}", e.getMessage());
+            log.error("Logging: Error creating match statistic: {}", e.getMessage());
             throw new RuntimeException("Error creating match statistic.");
         }
     }
 
     @Override
     public List<PlayerStatisticDTO> getStatisticsByPlayerMatch(Long playerMatchId) {
-        log.info("Searching playermatch with id {}...", playerMatchId);
+        log.info("Logging: Searching playermatch with id {}...", playerMatchId);
         return playerStatisticRepository.findByPlayerMatchId(playerMatchId).stream()
                 .map(playerStatisticMapper::toDTO).toList();
+    }
+
+    @Override
+    @Transactional
+    public PlayerStatisticDTO update(PlayerStatisticDTO playerStatisticDTO) {
+        log.info("Logging: Player statistic with id {}, searching...", playerStatisticDTO.getId());
+        playerStatisticRepository.findById(playerStatisticDTO.getId())
+                .orElseThrow(() -> {
+                    log.error("Logging: Player statistic with id {} not found.", playerStatisticDTO.getId());
+                    return new EntityNotFoundException("PlayerStatistic not found");
+                });
+        log.info("Logging: Done.");
+        log.info("Logging: Player match with id {}, searching...", playerStatisticDTO.getPlayerMatch().getId());
+        PlayerMatch playerMatch = playerMatchRepository.findById(playerStatisticDTO.getPlayerMatch().getId())
+                .orElseThrow(() -> {
+                    log.error("Logging: Player match with id {} not found.", playerStatisticDTO.getPlayerMatch().getId());
+                    return new EntityNotFoundException("PlayerMatch not found");
+                });
+        log.info("Logging: Done.");
+        log.info("Logging: Statistic with id {}, searching...", playerStatisticDTO.getStatistic().getId());
+        Statistic statistic = statisticRepository.findById(playerStatisticDTO.getStatistic().getId())
+                .orElseThrow(() -> {
+                    log.error("Logging: Statistic with id {} not found.", playerStatisticDTO.getStatistic().getId());
+                    return new EntityNotFoundException("Statistic not found");
+                });
+        log.info("Logging: Done.");
+        log.info("Logging: Updating...");
+        PlayerStatistic updated = playerStatisticMapper.toEntity(playerStatisticDTO, playerMatch, statistic);
+        PlayerStatistic saved = playerStatisticRepository.save(updated);
+        log.info("Logging: Done.");
+        return playerStatisticMapper.toDTO(saved);
     }
 }
 

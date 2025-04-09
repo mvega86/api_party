@@ -22,8 +22,10 @@ public class PlayerStatisticMapper {
         PlayerStatistic playerStatistic = new PlayerStatistic();
         playerStatistic.setPlayerMatch(playerMatch);
         playerStatistic.setStatistic(statistic);
-        playerStatistic.setValue(dto.getValue());
         playerStatistic.setTimestamp(dto.getTimestamp());
+        playerStatistic.setPositionX(dto.getPositionX());
+        playerStatistic.setPositionY(dto.getPositionY());
+        playerStatistic.setObservation(dto.getObservation());
         return playerStatistic;
     }
 
@@ -32,8 +34,10 @@ public class PlayerStatisticMapper {
         dto.setId(playerStatistic.getId());
         dto.setPlayerMatch(playerMatchMapper.toDTO(playerStatistic.getPlayerMatch()));
         dto.setStatistic(statisticMapper.toDTO(playerStatistic.getStatistic()));
-        dto.setValue(playerStatistic.getValue());
         dto.setTimestamp(playerStatistic.getTimestamp());
+        dto.setPositionX(playerStatistic.getPositionX());
+        dto.setPositionY(playerStatistic.getPositionY());
+        dto.setObservation(playerStatistic.getObservation());
 
         // Calculate relative minute for display only in API
         dto.setRelativeMinuteFormatted(MatchTimeUtil.calculateRelativeMinuteFormatted(playerStatistic.getPlayerMatch().getMatch(), playerStatistic.getTimestamp()));
