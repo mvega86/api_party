@@ -1,0 +1,18 @@
+ALTER TABLE match
+ADD COLUMN phase VARCHAR(32) NOT NULL DEFAULT 'NOT_STARTED';
+
+ALTER TABLE match
+ADD CONSTRAINT chk_match_phase
+CHECK (
+  phase IN (
+    'NOT_STARTED',
+    'FIRST_HALF',
+    'HALFTIME',
+    'SECOND_HALF',
+    'BETWEEN_SECOND_AND_EXTRA1',
+    'EXTRA1',
+    'HALFTIME_EXTRA',
+    'EXTRA2',
+    'PENALTYS'
+  )
+);

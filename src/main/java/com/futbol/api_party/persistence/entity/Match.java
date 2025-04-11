@@ -2,6 +2,7 @@ package com.futbol.api_party.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.futbol.api_party.domain.enums.MatchPhase;
 import com.futbol.api_party.domain.enums.MatchState;
 import com.futbol.api_party.persistence.audit.AuditModel;
 import jakarta.persistence.*;
@@ -26,6 +27,10 @@ public class Match extends AuditModel {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MatchState state = MatchState.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MatchPhase phase = MatchPhase.NOT_STARTED;
 
     @ManyToOne
     @JoinColumn(name = "home_team_id", nullable = false)

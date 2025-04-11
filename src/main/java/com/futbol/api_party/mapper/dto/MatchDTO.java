@@ -1,5 +1,6 @@
 package com.futbol.api_party.mapper.dto;
 
+import com.futbol.api_party.domain.enums.MatchPhase;
 import com.futbol.api_party.domain.enums.MatchState;
 import com.futbol.api_party.persistence.entity.Team;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -23,6 +24,9 @@ public class MatchDTO {
 
     @NotNull(message = "State is required.")
     private MatchState state;
+
+    @NotNull(message = "Phase is required.")
+    private MatchPhase phase;
 
     @NotNull(message = "Home team is required.")
     private TeamDTO homeTeam;
